@@ -17,7 +17,7 @@ Shooter::Shooter(DigitalInput * intakeSwitch, VictorSP * intakeMotor, VictorSP *
 	state = NONE;
 }
 
-void Shooter::stop(){
+void Shooter::stop(){//not for normal stopping
 	state = NONE;
 	intake->Set(0.0);
 	shooter->Set(0.0);
