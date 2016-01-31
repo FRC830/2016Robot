@@ -9,10 +9,15 @@
 #include <WPILib.h>
 #include "../wpiutils/830utilities.h"
 
-Arm::Arm(Encoder * armEncoder, VictorSP * armMotor) {
+Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor) {
+	resetSwitch = encResetSwitch;
 	encoder = armEncoder;
 	arm = armMotor;
 	targetPosition = INTAKE_POSITION;
+}
+
+void Arm::goToDown(){
+	targetPosition = DOWN_POSITION;
 }
 
 void Arm::goToIntake(){
@@ -31,6 +36,9 @@ void Arm::update(){
 		arm->Set(ARM_DOWN_SPEED);
 	}
 	arm->Set(0.0);
+
+	if(resetSwitch->Get())
+		encoder->Reset();
 }
 
 Arm::~Arm() {}
