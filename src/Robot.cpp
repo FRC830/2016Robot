@@ -26,6 +26,7 @@ private:
 	GamepadF310 * copilot;
 	Shooter * shooter;
 
+
 	void RobotInit()
 	{
 		drive = new RobotDrive(
@@ -76,6 +77,7 @@ private:
 		}else if (copilot->ButtonState(F310Buttons::Y)){
 			shooter -> shoot();
 		}
+
 	}
 
 	void TestPeriodic()
