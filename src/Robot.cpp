@@ -1,14 +1,20 @@
 #include "WPILib.h"
 #include "../wpiutils/830utilities.h"
 
+#include "Arm.h"
+#include "Shooter.h"
+
 class Robot: public IterativeRobot
+
+
+
 {
 private:
 
-	static const int FRONT_LEFT_PWM;
-	static const int FRONT_RIGHT_PWM;
-	static const int BACK_LEFT_PWM;
-	static const int BACK_RIGHT_PWM;
+	static const int FRONT_LEFT_PWM = 0;
+	static const int FRONT_RIGHT_PWM = 1;
+	static const int BACK_LEFT_PWM = 2;
+	static const int BACK_RIGHT_PWM = 3;
 
 	RobotDrive * drive;
 
@@ -49,6 +55,9 @@ private:
 		float right = pilot->RightY();
 
 		drive->TankDrive(left, right, true);
+
+		shooter -> update();
+		if copilot->
 	}
 
 	void TestPeriodic()
