@@ -28,22 +28,28 @@ void Shooter::stop(){//not for normal stopping
 }
 
 void Shooter::rollIn(){
-	state = ROLLING_IN;
+	state = MOVING_TO_ROLLING_IN;
 }
 
 void Shooter::rollOut(){
-	state = ROLLING_OUT;
+	state = MOVING_TO_ROLLING_OUT;
 	timer->Reset();
 }
 
-void Shooter::shoot(){
-	state = STARTING_SHOOTER;
+void Shooter::shoot() {
+	state = MOVING_TO_SHOOTER;
 	timer->Reset();
 	timer->Start();
 }
 
 void Shooter::update(){
 	switch(state){
+		case(MOVING_TO_ROLLING_IN):
+			arm->goToIntake();
+			if(arm->isAtTargetPosition()){
+				state = ROLLING_IN;
+			}
+			break;
 		case(ROLLING_IN):
 			if(isBroken()){
 				intake->Set(0.0);
@@ -55,6 +61,12 @@ void Shooter::update(){
 				intake->Set(1.0);
 			}
 			break;
+		case(MOVING_TO_ROLLING_OUT):
+			arm->goToIntake();
+			if(arm->isAtTargetPosition()){
+				state = ROLLING_OUT;
+			}
+			break;
 		case(ROLLING_OUT):
 			intake->Set(-1.0);
 			if(timer->Get() >= ROLL_OUT_TIME){
@@ -62,6 +74,12 @@ void Shooter::update(){
 				intake->Set(0.0);
 				timer->Stop();
 				timer->Reset();
+			}
+			break;
+		case(MOVING_TO_SHOOTER):
+			arm->goToShooting();
+			if(arm->isAtTargetPosition()){
+				state = STARTING_SHOOTER;
 			}
 			break;
 		case(STARTING_SHOOTER):
