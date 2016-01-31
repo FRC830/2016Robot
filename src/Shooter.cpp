@@ -105,6 +105,7 @@ void Shooter::update(){
 		case(NONE):
 			intake->Set(0.0);
 			shooter->Set(0.0);
+			arm->goToIntake();
 			timer->Stop();
 			timer->Reset();
 			break;
