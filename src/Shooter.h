@@ -16,6 +16,7 @@ class Shooter {
 public:
 	enum State{ROLLING_IN, ROLLING_OUT, STARTING_SHOOTER, SHOOTING, NONE};
 	Shooter(DigitalInput * lineBreak, VictorSP * intake, VictorSP * shooter);
+	void stop();//not for normal stopping
 	void rollIn();
 	void rollOut();
 	void shoot();

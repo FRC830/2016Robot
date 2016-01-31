@@ -10,10 +10,15 @@
 
 class Arm {
 public:
-	Arm();
+
+	Arm(Encoder * armEncoder, VictorSP * armMotor);
 	virtual ~Arm();
 private:
+	Encoder * encoder;
 	VictorSP * arm;
+
+	static const int INTAKE_POSITION = 0;
+	static const int SHOOT_POSITION = 60;
 };
 
 #endif /* SRC_ARM_H_ */

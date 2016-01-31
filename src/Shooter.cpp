@@ -17,6 +17,14 @@ Shooter::Shooter(DigitalInput * intakeSwitch, VictorSP * intakeMotor, VictorSP *
 	state = NONE;
 }
 
+void Shooter::stop(){
+	state = NONE;
+	intake->Set(0.0);
+	shooter->Set(0.0);
+	timer->Stop();
+	timer->Reset();
+}
+
 void Shooter::rollIn(){
 	state = ROLLING_IN;
 }

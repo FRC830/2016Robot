@@ -7,8 +7,9 @@
 
 #include <Arm.h>
 
-Arm::Arm(int pwm) {
-	arm = new VictorSP(pwm);
+Arm::Arm(Encoder * armEncoder, VictorSP * armMotor) {
+	encoder = armEncoder;
+	arm = armMotor;
 }
 
 Arm::~Arm() {
