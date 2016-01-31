@@ -96,6 +96,7 @@ void Shooter::update(){
 			shooter->Set(1.0);
 			if(timer->Get() >= SHOOT_TIME){
 				state = NONE;
+				arm->goToIntake();
 				intake->Set(0.0);
 				shooter->Set(0.0);
 				timer->Stop();
@@ -105,7 +106,6 @@ void Shooter::update(){
 		case(NONE):
 			intake->Set(0.0);
 			shooter->Set(0.0);
-			arm->goToIntake();
 			timer->Stop();
 			timer->Reset();
 			break;

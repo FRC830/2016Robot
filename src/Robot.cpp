@@ -25,6 +25,8 @@ private:
 	static const int INTAKE_DIO = 2;
 	static const int RESET_DIO = 3;
 
+	static const int TICKS_TO_FULL_SPEED = 100;
+
 	RobotDrive * drive;
 
 	GamepadF310 * pilot;
@@ -73,26 +75,35 @@ private:
 
 	}
 
+	float previousForward = 0;
+
 	void TeleopPeriodic()
 	{
-		float left = pilot->LeftY();
-		float right = pilot->RightY();
+		float targetForward = pilot->LeftY();
+		float turn = pilot->RightY();
 
-		drive->TankDrive(left, right, true);
+		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 
+		drive->ArcadeDrive(forward, turn, true);
 
-		if (copilot-> ButtonState(F310Buttons::A)) { //gather a ball
+		previousForward = forward;
+
+		if (copilot->ButtonState(F310Buttons::A)) { //gather a ball
 			shooter -> rollIn();
-		}else if (copilot -> ButtonState(F310Buttons::B)){ //cancel gathering a ball
+		}else if (copilot->ButtonState(F310Buttons::B)){ //cancel gathering a ball
 			shooter->stop();
-		}else if (copilot-> ButtonState(F310Buttons::X)){ //eject a ball
+		}else if (copilot->ButtonState(F310Buttons::X)){ //eject a ball
 			shooter-> rollOut();
 		}else if (copilot->ButtonState(F310Buttons::Y)){ //shoot a ball
 			shooter -> shoot();
+		}else if (copilot->DPadY() == 1){
+			arm->goToCheval();
+		}else if (copilot->DPadY() == -1){//for moving down after cheval
+			arm->goToDown();
 		}
 
 		shooter->update();
-
+		arm->update();
 	}
 
 	void TestPeriodic()
