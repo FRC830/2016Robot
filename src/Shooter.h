@@ -15,7 +15,7 @@ class Shooter {
 
 public:
 	enum State{ROLLING_IN, ROLLING_OUT, STARTING_SHOOTER, SHOOTING, NONE};
-	Shooter(DigitalInput * lineBreak, VictorSP * intake, VictorSP * shooter);
+	Shooter(DigitalInput * lineBreak, VictorSP * intake, VictorSP * shooter, Arm * robotArm);
 	void stop();//not for normal stopping
 	void rollIn();
 	void rollOut();
@@ -26,6 +26,7 @@ private:
 	DigitalInput * lineBreak;
 	VictorSP * intake;
 	VictorSP * shooter;
+	Arm * arm;
 	Timer * timer;
 
 	const double ROLL_OUT_TIME = 2.0;//time to roll out
