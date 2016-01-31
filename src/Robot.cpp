@@ -20,7 +20,6 @@ private:
 	static const int INTAKE_VICTOR_PWM = 5;
 	static const int ARM_VICTOR_PWM = 6;
 
-
 	static const int ENCODER_1_DIO = 0;
 	static const int ENCODER_2_DIO = 1;
 	static const int INTAKE_DIO = 2;
