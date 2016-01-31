@@ -70,7 +70,11 @@ private:
 		if (copilot-> ButtonState(F310Buttons::A)) {
 			shooter -> rollIn();
 		}else if (copilot -> ButtonState(F310Buttons::B)){
-			shooter -> ;
+			shooter ->stop();
+		}else if (copilot-> ButtonState(F310Buttons::X)){
+			shooter-> rollOut();
+		}else if (copilot->ButtonState(F310Buttons::Y)){
+			shooter -> shoot();
 		}
 	}
 

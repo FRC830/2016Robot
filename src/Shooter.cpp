@@ -17,6 +17,14 @@ Shooter::Shooter(DigitalInput * intakeSwitch, VictorSP * intakeMotor, VictorSP *
 	state = NONE;
 }
 
+void Shooter::stop(){
+	state = NONE;
+	intake->Set(0.0);
+	shooter->Set(0.0);
+	timer->Stop();
+	timer->Reset();
+}
+
 void Shooter::rollIn(){
 	state = ROLLING_IN;
 }
@@ -26,20 +34,10 @@ void Shooter::rollOut(){
 	timer->Reset();
 }
 
-void Shooter::stopRolling(){
-	if(state == ROLLING_OUT){
-		state = NONE;
-	}
-}
-
-void Shooter::stopShooting(){
-	if(state == SHOOTING){
-		state = NONE;
-	}
-}
-
 void Shooter::shoot(){
-	state = SHOOTING;
+	state = STARTING_SHOOTER;
+	timer->Reset();
+	timer->Start();
 }
 
 void Shooter::update(){
@@ -48,6 +46,8 @@ void Shooter::update(){
 			if(isBroken()){
 				intake->Set(0.0);
 				state = NONE;
+				timer->Stop();
+				timer->Reset();
 			}
 			else{
 				intake->Set(1.0);
@@ -55,14 +55,39 @@ void Shooter::update(){
 			break;
 		case(ROLLING_OUT):
 			intake->Set(-1.0);
+			if(timer->Get() >= ROLL_OUT_TIME){
+				state = NONE;
+				intake->Set(0.0);
+				timer->Stop();
+				timer->Reset();
+			}
+			break;
+		case(STARTING_SHOOTER):
+			shooter->Set(1.0);
+			if(timer->Get() >= SHOOT_WAIT_TIME){
+				state = SHOOTING;
+				intake->Set(1.0);
+				timer->Reset();
+				timer->Start();
+			}
 			break;
 		case(SHOOTING):
 			intake->Set(1.0);
 			shooter->Set(1.0);
+			if(timer->Get() >= SHOOT_TIME){
+				state = NONE;
+				intake->Set(0.0);
+				shooter->Set(0.0);
+				timer->Stop();
+				timer->Reset();
+			}
 			break;
 		case(NONE):
 			intake->Set(0.0);
 			shooter->Set(0.0);
+			timer->Stop();
+			timer->Reset();
+			break;
 	}
 }
 
