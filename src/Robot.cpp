@@ -81,20 +81,32 @@ private:
 		drive->TankDrive(left, right, true);
 
 
-		if (copilot-> ButtonState(F310Buttons::A)) {
+		if (copilot-> ButtonState(F310Buttons::A)) { //gather a ball
+			arm->goToIntake();
 			shooter -> rollIn();
-		}else if (copilot -> ButtonState(F310Buttons::B)){
-			shooter ->stop();
-		}else if (copilot-> ButtonState(F310Buttons::X)){
+		}else if (copilot -> ButtonState(F310Buttons::B)){ //cancel gathering a ball
+			shooter->stop();
+		}else if (copilot-> ButtonState(F310Buttons::X)){ //eject a ball
+			arm ->goToIntake();
 			shooter-> rollOut();
-		}else if (copilot->ButtonState(F310Buttons::Y)){
+		}else if (copilot->ButtonState(F310Buttons::Y)){ //shoot a ball
+
 			shooter -> shoot();
 		}
 
-		if (copilot-> ){}
+		if (copilot->DPadY()){
+			arm -> goToDown();
+		}else if (copilot->){
+			arm -> goToIntake();
+		}else if (copilot-> ){
+			arm -> goToCheval();
+		}else if (copilot ->){
+			arm -> goToShooting();
+		}
 
 		shooter->update();
-		arm ->update():
+		arm ->update();
+
 	}
 
 	void TestPeriodic()
