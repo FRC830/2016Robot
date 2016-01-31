@@ -9,11 +9,13 @@
 #include <WPILib.h>
 #include "../wpiutils/830utilities.h"
 
-Shooter::Shooter(DigitalInput * intakeSwitch, VictorSP * intakeMotor, VictorSP * shooterMotor) {
+Shooter::Shooter(DigitalInput * intakeSwitch, VictorSP * intakeMotor, VictorSP * shooterMotor, Arm * robotArm) {
 	lineBreak = intakeSwitch;
 	intake = intakeMotor;
 	shooter = shooterMotor;
 	timer = new Timer();
+	arm = robotArm;
+
 	state = NONE;
 }
 

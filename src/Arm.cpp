@@ -13,34 +13,47 @@ Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMoto
 	resetSwitch = encResetSwitch;
 	encoder = armEncoder;
 	arm = armMotor;
-	targetPosition = INTAKE_POSITION;
+	target = INTAKE_POSITION;
+	position = MOVING;
 }
 
 void Arm::goToDown(){
-	targetPosition = DOWN_POSITION;
+	target = DOWN_POSITION;
 }
 
 void Arm::goToCheval(){
-	targetPosition = CHEVAL_POSITION;
+	target = CHEVAL_POSITION;
 }
 
 void Arm::goToIntake(){
-	targetPosition = INTAKE_POSITION;
+	target = INTAKE_POSITION;
 }
 
 void Arm::goToShooting(){
-	targetPosition = SHOOTING_POSITION;
+	target = SHOOTING_POSITION;
+}
+
+int Arm::targetPosition(){
+	return target;
+}
+
+bool Arm::isAtTargetPosition(){
+	return position == target;
 }
 
 void Arm::update(){
 	if( (encoder->Get() - targetPosition) > MARGIN_OF_ERROR){
 		arm->Set(ARM_UP_SPEED);
+		position = MOVING;
 	}
 	else if( (encoder->Get() - targetPosition) < -MARGIN_OF_ERROR){
 		arm->Set(ARM_DOWN_SPEED);
+		position = MOVING;
 	}
-	arm->Set(0.0);
-
+	else{
+		arm->Set(0.0);
+		position = targetPosition;
+	}
 	if(resetSwitch->Get())
 		encoder->Reset();
 }
