@@ -13,17 +13,20 @@
 
 class Arm {
 public:
-	Arm(Encoder * armEncoder, VictorSP * armMotor);
+	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
+	void goToDown();
 	void goToIntake();
 	void goToShooting();
 	void update();
 	virtual ~Arm();
 private:
+	DigitalInput * resetSwitch;
 	Encoder * encoder;
 	VictorSP * arm;
 	int targetPosition;
 
-	static const int INTAKE_POSITION = 0;
+	static const int DOWN_POSITION = -1;
+	static const int INTAKE_POSITION = 5;
 	static const int SHOOTING_POSITION = 60;
 	static const int MARGIN_OF_ERROR = 1;
 	static const int ARM_UP_SPEED = 1.0;

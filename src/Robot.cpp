@@ -15,16 +15,23 @@ private:
 	static const int FRONT_RIGHT_PWM = 1;
 	static const int BACK_LEFT_PWM = 2;
 	static const int BACK_RIGHT_PWM = 3;
-	static const int SHOOTER_VICTOR1_PWM = 4;
-	static const int SHOOTER_VICTOR2_PWM = 5;
-	static const int SHOOTER_DIO = 6;
 
+	static const int SHOOTER_VICTOR_PWM = 4;
+	static const int INTAKE_VICTOR_PWM = 5;
+	static const int ARM_VICTOR_PWM = 6;
+
+
+	static const int ENCODER_1_DIO = 0;
+	static const int ENCODER_2_DIO = 1;
+	static const int INTAKE_DIO = 2;
+	static const int RESET_DIO = 3;
 
 	RobotDrive * drive;
 
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
 	Shooter * shooter;
+	Arm * arm;
 
 
 	void RobotInit()
@@ -38,11 +45,17 @@ private:
 
 		pilot = new GamepadF310(0);
 		copilot = new GamepadF310(1);
+
 		shooter = new Shooter(
-				new VictorSP(SHOOTER_VICTOR1_PWM),
-				new VictorSP(SHOOTER_VICTOR2_PWM),
-				new DigitalInput(SHOOTER_DIO)
-				);
+				new VictorSP(SHOOTER_VICTOR_PWM),
+				new VictorSP(INTAKE_VICTOR_PWM),
+				new DigitalInput(INTAKE_DIO)
+			);
+		arm = new Arm(
+				new Encoder(ENCODER_1_DIO, ENCODER_2_DIO),
+				new VictorSP(ARM_VICTOR_PWM),
+				new DigitalInput(RESET_DIO)
+			);
 	}
 
 	void AutonomousInit()
@@ -67,7 +80,7 @@ private:
 
 		drive->TankDrive(left, right, true);
 
-		shooter -> update();
+
 		if (copilot-> ButtonState(F310Buttons::A)) {
 			shooter -> rollIn();
 		}else if (copilot -> ButtonState(F310Buttons::B)){
@@ -78,6 +91,10 @@ private:
 			shooter -> shoot();
 		}
 
+		if (copilot-> ){}
+
+		shooter->update();
+		arm ->update():
 	}
 
 	void TestPeriodic()
