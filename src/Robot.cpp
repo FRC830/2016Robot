@@ -46,16 +46,17 @@ private:
 		pilot = new GamepadF310(0);
 		copilot = new GamepadF310(1);
 
-		shooter = new Shooter(
-				new VictorSP(SHOOTER_VICTOR_PWM),
-				new VictorSP(INTAKE_VICTOR_PWM),
-				new DigitalInput(INTAKE_DIO)
-			);
 		arm = new Arm(
 				new Encoder(ENCODER_1_DIO, ENCODER_2_DIO),
 				new VictorSP(ARM_VICTOR_PWM),
 				new DigitalInput(RESET_DIO)
-			);
+		);
+		shooter = new Shooter(
+				new VictorSP(SHOOTER_VICTOR_PWM),
+				new VictorSP(INTAKE_VICTOR_PWM),
+				new DigitalInput(INTAKE_DIO),
+				arm
+		);
 	}
 
 	void AutonomousInit()
