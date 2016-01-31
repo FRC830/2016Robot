@@ -1,0 +1,3 @@
+[submodule "wpiutils"]
+	path = wpiutils
+	url = https://github.com/FRC830/wpiutils.git
