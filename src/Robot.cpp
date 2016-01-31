@@ -76,6 +76,8 @@ private:
 		}else if (copilot->ButtonState(F310Buttons::Y)){
 			shooter -> shoot();
 		}
+
+
 	}
 
 	void TestPeriodic()

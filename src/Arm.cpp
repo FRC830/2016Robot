@@ -20,6 +20,10 @@ void Arm::goToDown(){
 	targetPosition = DOWN_POSITION;
 }
 
+void Arm::goToCheval(){
+	targetPosition = CHEVAL_POSITION;
+}
+
 void Arm::goToIntake(){
 	targetPosition = INTAKE_POSITION;
 }
