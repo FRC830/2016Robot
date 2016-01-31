@@ -14,13 +14,11 @@
 class Shooter {
 
 public:
-	enum State{ROLLING_IN, ROLLING_OUT, SHOOTING, NONE};
+	enum State{ROLLING_IN, ROLLING_OUT, STARTING_SHOOTER, SHOOTING, NONE};
 	Shooter(DigitalInput * lineBreak, VictorSP * intake, VictorSP * shooter);
 	void rollIn();
 	void rollOut();
-	void stopRolling();//for stopping rolling after rolling out, not in
 	void shoot();
-	void stopShooting();
 	void update();
 	virtual ~Shooter();
 private:
