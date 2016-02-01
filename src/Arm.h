@@ -27,16 +27,11 @@ private:
 	DigitalInput * resetSwitch;
 	Encoder * encoder;
 	VictorSP * arm;
+	PIDController * armPID;
 	Position target;
 	Position position;
 
-	/*
-	static const int DOWN_POSITION = -1;
-	static const int INTAKE_POSITION = 5;
-	static const int CHEVAL_POSITION = 20;
-	static const int SHOOTING_POSITION = 60;
-	*/
-	static const int MARGIN_OF_ERROR = 1;
+	static const int MARGIN_OF_ERROR = 10;
 
 	static const int ARM_UP_SPEED = 1.0;
 	static const int ARM_DOWN_SPEED = -0.5;
