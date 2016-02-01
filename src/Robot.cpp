@@ -77,8 +77,7 @@ private:
 
 	float previousForward = 0;
 
-	void TeleopPeriodic()
-	{
+	void TeleopPeriodic(){
 		float targetForward = pilot->LeftY();
 		float turn = pilot->RightY();
 
