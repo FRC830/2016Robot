@@ -8,11 +8,16 @@
 #include <Arm.h>
 #include <WPILib.h>
 #include "../wpiutils/830utilities.h"
+#include <cmath> using namespace std
 
 Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor) {
 	resetSwitch = encResetSwitch;
 	encoder = armEncoder;
 	arm = armMotor;
+	armPID = new PIDController(0.1, 0, 0, armEncoder, armMotor);
+	armPID->SetInputRange(0,10000);
+	armPID->SetOutputRange(-1,1);
+
 	target = INTAKE_POSITION;
 	position = MOVING;
 }
@@ -38,10 +43,12 @@ int Arm::targetPosition(){
 }
 
 bool Arm::isAtTargetPosition(){
-	return position == target;
+	//return position == target;
+	return abs(armPID->GetError())<MARGIN_OF_ERROR;
 }
 
 void Arm::update(){
+	/*
 	if( (encoder->Get() - targetPosition) > MARGIN_OF_ERROR){
 		arm->Set(ARM_UP_SPEED);
 		position = MOVING;
@@ -54,6 +61,8 @@ void Arm::update(){
 		arm->Set(0.0);
 		position = targetPosition;
 	}
+	*/
+	armPID->SetSetpoint(target);
 	if(resetSwitch->Get())
 		encoder->Reset();
 }
