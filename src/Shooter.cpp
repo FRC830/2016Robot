@@ -97,7 +97,7 @@ void Shooter::update(){
 }
 
 bool Shooter::hasBall(){
-	return lineBreak->Get();
+	return !lineBreak->Get();
 }
 
 Shooter::~Shooter() {}

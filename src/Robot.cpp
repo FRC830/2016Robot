@@ -51,8 +51,8 @@ private:
 		);
 		shooter = new Shooter(
 				new DigitalInput(INTAKE_DIO),
-				new VictorSP(SHOOTER_VICTOR_PWM),
 				new VictorSP(INTAKE_VICTOR_PWM),
+				new VictorSP(SHOOTER_VICTOR_PWM),
 				arm
 		);
 	}
@@ -97,6 +97,7 @@ private:
 		}else if (copilot->DPadY() == -1){//for moving down after cheval
 			arm->goToDown();
 		}
+		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
 
 		shooter->update();
 		arm->update();
