@@ -13,13 +13,13 @@
 
 class Arm {
 public:
-	enum Position{DOWN_POSITION = -1, INTAKE_POSITION = 5, CHEVAL_POSITION = 20, SHOOTING_POSITION = 60, MOVING};
+	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 20, CHEVAL_POSITION = 40, SHOOTING_POSITION = 100};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
 	void goToDown();
 	void goToIntake();
 	void goToCheval();
 	void goToShooting();
-	int targetPosition();
+	double targetPosition();
 	bool isAtTargetPosition();
 	void update();
 	virtual ~Arm();
@@ -28,11 +28,10 @@ private:
 	Encoder * encoder;
 	VictorSP * arm;
 	PIDController * armPID;
-	Position target;
-	Position position;
+
+	bool bottomSwitchPressed();
 
 	static const int MARGIN_OF_ERROR = 10;
-
 	static const int ARM_UP_SPEED = 1.0;
 	static const int ARM_DOWN_SPEED = -0.5;
 };

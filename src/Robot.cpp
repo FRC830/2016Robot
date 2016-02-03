@@ -5,9 +5,6 @@
 #include "Shooter.h"
 
 class Robot: public IterativeRobot
-
-
-
 {
 private:
 
@@ -48,14 +45,14 @@ private:
 		copilot = new GamepadF310(1);
 
 		arm = new Arm(
+				new DigitalInput(RESET_DIO),
 				new Encoder(ENCODER_1_DIO, ENCODER_2_DIO),
-				new VictorSP(ARM_VICTOR_PWM),
-				new DigitalInput(RESET_DIO)
+				new VictorSP(ARM_VICTOR_PWM)
 		);
 		shooter = new Shooter(
+				new DigitalInput(INTAKE_DIO),
 				new VictorSP(SHOOTER_VICTOR_PWM),
 				new VictorSP(INTAKE_VICTOR_PWM),
-				new DigitalInput(INTAKE_DIO),
 				arm
 		);
 	}
@@ -88,7 +85,7 @@ private:
 		previousForward = forward;
 
 		if (copilot->ButtonState(F310Buttons::A)) { //gather a ball
-			shooter -> rollIn();
+			shooter->rollIn();
 		}else if (copilot->ButtonState(F310Buttons::B)){ //cancel gathering a ball
 			shooter->stop();
 		}else if (copilot->ButtonState(F310Buttons::X)){ //eject a ball

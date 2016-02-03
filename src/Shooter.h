@@ -9,12 +9,13 @@
 #define SRC_SHOOTER_H_
 
 #include <WPILib.h>
+#include "arm.h"
 #include "../wpiutils/830utilities.h"
 
 class Shooter {
 
 public:
-	enum State{MOVING_TO_ROLLING_IN, ROLLING_IN, MOVING_TO_ROLLING_OUT, ROLLING_OUT, MOVING_TO_SHOOTER, STARTING_SHOOTER, SHOOTING, NONE};
+	enum State{ROLLING_IN, ROLLING_OUT, STARTING_SHOOTER, SHOOTING, STATIONARY};
 	Shooter(DigitalInput * lineBreak, VictorSP * intake, VictorSP * shooter, Arm * robotArm);
 	void stop();//not for normal stopping
 	void rollIn();
@@ -29,11 +30,16 @@ private:
 	Arm * arm;
 	Timer * timer;
 
-	const double ROLL_OUT_TIME = 2.0;//time to roll out
+	const float ROLL_OUT_SPEED = -1.0;
+	const float ROLL_IN_SPEED = 0.8;
+	const float ROLL_TO_SHOOT_SPEED = 1.0; //speed to intake when feeding ball from storage to shooter
+	const double ROLL_OUT_TIME = 2.0;//time to roll out completely
+
+	const float SHOOT_SPEED = 1.0;
 	const double SHOOT_WAIT_TIME = 0.5;//to wait to activate intake motor after activating shooter motor;
 	const double SHOOT_TIME =  2.0;//time to stop shooting
 
-	bool isBroken();
+	bool hasBall();
 	State state;
 };
 

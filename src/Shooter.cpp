@@ -16,11 +16,11 @@ Shooter::Shooter(DigitalInput * intakeSwitch, VictorSP * intakeMotor, VictorSP *
 	timer = new Timer();
 	arm = robotArm;
 
-	state = NONE;
+	state = STATIONARY;
 }
 
-void Shooter::stop(){//not for normal stopping
-	state = NONE;
+void Shooter::stop(){ //not for normal stopping
+	state = STATIONARY;
 	intake->Set(0.0);
 	shooter->Set(0.0);
 	timer->Stop();
@@ -28,74 +28,58 @@ void Shooter::stop(){//not for normal stopping
 }
 
 void Shooter::rollIn(){
-	state = MOVING_TO_ROLLING_IN;
+	arm->goToIntake();
+	state = ROLLING_IN;
 }
 
 void Shooter::rollOut(){
-	state = MOVING_TO_ROLLING_OUT;
+	arm->goToIntake();
+	state = ROLLING_OUT;
 	timer->Reset();
 }
 
 void Shooter::shoot() {
-	state = MOVING_TO_SHOOTER;
+	state = STARTING_SHOOTER;
 	timer->Reset();
 	timer->Start();
 }
 
 void Shooter::update(){
 	switch(state){
-		case(MOVING_TO_ROLLING_IN):
-			arm->goToIntake();
-			if(arm->isAtTargetPosition()){
-				state = ROLLING_IN;
-			}
-			break;
 		case(ROLLING_IN):
-			if(isBroken()){
+			intake->Set(ROLL_IN_SPEED);
+			if(hasBall()){
 				intake->Set(0.0);
-				state = NONE;
-				timer->Stop();
-				timer->Reset();
-			}
-			else{
-				intake->Set(1.0);
-			}
-			break;
-		case(MOVING_TO_ROLLING_OUT):
-			arm->goToIntake();
-			if(arm->isAtTargetPosition()){
-				state = ROLLING_OUT;
+				state = STATIONARY;
 			}
 			break;
 		case(ROLLING_OUT):
-			intake->Set(-1.0);
-			if(timer->Get() >= ROLL_OUT_TIME){
-				state = NONE;
-				intake->Set(0.0);
-				timer->Stop();
-				timer->Reset();
-			}
-			break;
-		case(MOVING_TO_SHOOTER):
-			arm->goToShooting();
 			if(arm->isAtTargetPosition()){
-				state = STARTING_SHOOTER;
+				timer->Start();
+				intake->Set(ROLL_OUT_SPEED);
+				if(timer->Get() >= ROLL_OUT_TIME){
+					state = STATIONARY;
+					intake->Set(0.0);
+					timer->Stop();
+					timer->Reset();
+				}
 			}
 			break;
 		case(STARTING_SHOOTER):
-			shooter->Set(1.0);
-			if(timer->Get() >= SHOOT_WAIT_TIME){
+			shooter->Set(SHOOT_SPEED);
+			arm->goToShooting();
+			if(timer->Get() >= SHOOT_WAIT_TIME && arm->isAtTargetPosition()){
 				state = SHOOTING;
-				intake->Set(1.0);
+				intake->Set(ROLL_TO_SHOOT_SPEED);
 				timer->Reset();
 				timer->Start();
 			}
 			break;
 		case(SHOOTING):
-			intake->Set(1.0);
-			shooter->Set(1.0);
+			intake->Set(ROLL_TO_SHOOT_SPEED);
+			shooter->Set(SHOOT_SPEED);
 			if(timer->Get() >= SHOOT_TIME){
-				state = NONE;
+				state = STATIONARY;
 				arm->goToIntake();
 				intake->Set(0.0);
 				shooter->Set(0.0);
@@ -103,7 +87,7 @@ void Shooter::update(){
 				timer->Reset();
 			}
 			break;
-		case(NONE):
+		case(STATIONARY):
 			intake->Set(0.0);
 			shooter->Set(0.0);
 			timer->Stop();
@@ -112,7 +96,7 @@ void Shooter::update(){
 	}
 }
 
-bool Shooter::isBroken(){
+bool Shooter::hasBall(){
 	return lineBreak->Get();
 }
 

@@ -17,53 +17,41 @@ Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMoto
 	armPID = new PIDController(0.1, 0, 0, armEncoder, armMotor);
 	armPID->SetInputRange(0,10000);
 	armPID->SetOutputRange(-1,1);
+	armPID->SetSetpoint(DOWN_POSITION);
 
-	target = INTAKE_POSITION;
-	position = MOVING;
+	armPID->Enable();
 }
 
 void Arm::goToDown(){
-	target = DOWN_POSITION;
+	armPID->SetSetpoint(DOWN_POSITION);
 }
 
 void Arm::goToCheval(){
-	target = CHEVAL_POSITION;
+	armPID->SetSetpoint(CHEVAL_POSITION);
 }
 
 void Arm::goToIntake(){
-	target = INTAKE_POSITION;
+	armPID->SetSetpoint(INTAKE_POSITION);
 }
 
 void Arm::goToShooting(){
-	target = SHOOTING_POSITION;
+	armPID->SetSetpoint(SHOOTING_POSITION);
 }
 
-int Arm::targetPosition(){
-	return target;
+double Arm::targetPosition(){
+	return armPID->GetSetpoint();
 }
 
 bool Arm::isAtTargetPosition(){
-	//return position == target;
 	return abs(armPID->GetError())<MARGIN_OF_ERROR;
 }
 
+bool Arm::bottomSwitchPressed(){
+	return !resetSwitch->Get();
+}
+
 void Arm::update(){
-	/*
-	if( (encoder->Get() - targetPosition) > MARGIN_OF_ERROR){
-		arm->Set(ARM_UP_SPEED);
-		position = MOVING;
-	}
-	else if( (encoder->Get() - targetPosition) < -MARGIN_OF_ERROR){
-		arm->Set(ARM_DOWN_SPEED);
-		position = MOVING;
-	}
-	else{
-		arm->Set(0.0);
-		position = targetPosition;
-	}
-	*/
-	armPID->SetSetpoint(target);
-	if(resetSwitch->Get())
+	if(bottomSwitchPressed())
 		encoder->Reset();
 }
 
