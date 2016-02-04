@@ -31,7 +31,6 @@ private:
 	Shooter * shooter;
 	Arm * arm;
 
-
 	void RobotInit()
 	{
 		drive = new RobotDrive(
@@ -55,6 +54,8 @@ private:
 				new VictorSP(SHOOTER_VICTOR_PWM),
 				arm
 		);
+
+		SmartDashboard::init();
 	}
 
 	void AutonomousInit()
@@ -97,7 +98,13 @@ private:
 		}else if (copilot->DPadY() == -1){//for moving down after cheval
 			arm->goToDown();
 		}
+
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
+		SmartDashboard::PutNumber("Shooter Encoder: ", arm->encoderValue());
+
+		//SmartDashboard::PutNumber("Shoot Wait Time:", 0.4);
+		double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
+		shooter->setShootWaitTime(shootWaitTime);
 
 		shooter->update();
 		arm->update();

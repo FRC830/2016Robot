@@ -43,11 +43,16 @@ double Arm::targetPosition(){
 }
 
 bool Arm::isAtTargetPosition(){
-	return abs(armPID->GetError())<MARGIN_OF_ERROR;
+	//return abs(armPID->GetError())<MARGIN_OF_ERROR;
+	return true;
 }
 
 bool Arm::bottomSwitchPressed(){
-	return !resetSwitch->Get();
+	return resetSwitch->Get();
+}
+
+double Arm::encoderValue(){
+	return encoder->Get();
 }
 
 void Arm::update(){

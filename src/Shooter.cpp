@@ -44,13 +44,26 @@ void Shooter::shoot() {
 	timer->Start();
 }
 
+void Shooter::setShootWaitTime(double shootWaitTime){
+	SHOOT_WAIT_TIME = shootWaitTime;
+}
+
 void Shooter::update(){
 	switch(state){
 		case(ROLLING_IN):
 			intake->Set(ROLL_IN_SPEED);
 			if(hasBall()){
 				intake->Set(0.0);
+				state = ADJUSTING_ROLL_IN;
+			}
+			break;
+		case(ADJUSTING_ROLL_IN):
+			intake->Set(ADJUST_SPEED);
+			if(!hasBall()){
+				intake->Set(0.0);
 				state = STATIONARY;
+				timer->Stop();
+				timer->Reset();
 			}
 			break;
 		case(ROLLING_OUT):
@@ -58,8 +71,8 @@ void Shooter::update(){
 				timer->Start();
 				intake->Set(ROLL_OUT_SPEED);
 				if(timer->Get() >= ROLL_OUT_TIME){
-					state = STATIONARY;
 					intake->Set(0.0);
+					state = STATIONARY;
 					timer->Stop();
 					timer->Reset();
 				}

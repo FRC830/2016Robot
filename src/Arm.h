@@ -21,6 +21,7 @@ public:
 	void goToShooting();
 	double targetPosition();
 	bool isAtTargetPosition();
+	double encoderValue();
 	void update();
 	virtual ~Arm();
 private:
