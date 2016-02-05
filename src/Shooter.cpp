@@ -48,6 +48,12 @@ void Shooter::setShootWaitTime(double shootWaitTime){
 	SHOOT_WAIT_TIME = shootWaitTime;
 }
 
+void Shooter::reset(){
+	state = STATIONARY;
+	timer->Stop();
+	timer->Reset();
+}
+
 void Shooter::update(){
 	switch(state){
 		case(ROLLING_IN):
@@ -82,7 +88,7 @@ void Shooter::update(){
 			shooter->Set(SHOOT_SPEED);
 			arm->goToShooting();
 			if(timer->Get() >= SHOOT_WAIT_TIME && arm->isAtTargetPosition()){
-				state = SHOOTING;
+				//state = SHOOTING;
 				intake->Set(ROLL_TO_SHOOT_SPEED);
 				timer->Reset();
 				timer->Start();

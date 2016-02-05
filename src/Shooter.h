@@ -21,9 +21,11 @@ public:
 	void rollIn();
 	void rollOut();
 	void shoot();
-	void update();
 	bool hasBall();
 	void setShootWaitTime(double shootWaitTime);
+
+	void reset();
+	void update();
 	virtual ~Shooter();
 private:
 	DigitalInput * lineBreak;

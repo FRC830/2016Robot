@@ -70,7 +70,8 @@ private:
 
 	void TeleopInit()
 	{
-
+		arm->reset();
+		shooter->reset();
 	}
 
 	float previousForward = 0;
@@ -104,6 +105,17 @@ private:
 
 		//SmartDashboard::PutNumber("Shoot Wait Time:", 0.4);
 		double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
+
+		//SmartDashboard::PutNumber("P:", 0.1);
+		//SmartDashboard::PutNumber("I:", 0.0);
+		//SmartDashboard::PutNumber("D:", 0.0);
+		double p = SmartDashboard::GetNumber("P:", 0.1);
+		double i = SmartDashboard::GetNumber("I:", 0.0);
+		double d = SmartDashboard::GetNumber("D:", 0.0);
+		arm->setPID(p, i, d);
+
+		SmartDashboard::PutNumber("PID Setpoint:", arm->pidSetpoint());
+
 		shooter->setShootWaitTime(shootWaitTime);
 
 		shooter->update();
