@@ -86,7 +86,7 @@ private:
 		if(type == 'a'){
 
 		}
-		//either
+		//
 		if(type == 'b'){
 
 		}
