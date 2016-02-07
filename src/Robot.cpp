@@ -16,11 +16,15 @@ private:
 	static const int SHOOTER_VICTOR_PWM = 4;
 	static const int INTAKE_VICTOR_PWM = 5;
 	static const int ARM_VICTOR_PWM = 6;
+	static const int TAIL_VICTOR_PWM = 7;
 
 	static const int ENCODER_1_DIO = 0;
 	static const int ENCODER_2_DIO = 1;
 	static const int INTAKE_DIO = 2;
 	static const int RESET_DIO = 3;
+	static const int TAIL_BOTTOM_DIO = 4;
+	static const int TAIL_TOP_DIO = 5;
+
 
 	static const int TICKS_TO_FULL_SPEED = 100;
 
@@ -30,6 +34,7 @@ private:
 	GamepadF310 * copilot;
 	Shooter * shooter;
 	Arm * arm;
+	RatTail * ratTail;
 
 	void RobotInit()
 	{
@@ -44,15 +49,20 @@ private:
 		copilot = new GamepadF310(1);
 
 		arm = new Arm(
-				new DigitalInput(RESET_DIO),
-				new Encoder(ENCODER_1_DIO, ENCODER_2_DIO),
-				new VictorSP(ARM_VICTOR_PWM)
+			new DigitalInput(RESET_DIO),
+			new Encoder(ENCODER_1_DIO, ENCODER_2_DIO),
+			new VictorSP(ARM_VICTOR_PWM)
 		);
 		shooter = new Shooter(
-				new DigitalInput(INTAKE_DIO),
-				new VictorSP(INTAKE_VICTOR_PWM),
-				new VictorSP(SHOOTER_VICTOR_PWM),
-				arm
+			new DigitalInput(INTAKE_DIO),
+			new VictorSP(INTAKE_VICTOR_PWM),
+			new VictorSP(SHOOTER_VICTOR_PWM),
+			arm
+		);
+		ratTail = new RatTail(
+			new DigitalInput(TAIL_BOTTOM_DIO),
+			new DigitalInput(TAIL_TOP_DIO),
+			new VictorSP(TAIL_VICTOR_PWM)
 		);
 
 		SmartDashboard::init();
@@ -95,20 +105,16 @@ private:
 		}else if (copilot->ButtonState(F310Buttons::Y)){ //shoot a ball
 			shooter -> shoot();
 		}else if (copilot->DPadY() == 1){
-			arm->goToCheval();
+			ratTail->goToTop();
 		}else if (copilot->DPadY() == -1){//for moving down after cheval
-			arm->goToDown();
+			ratTail->goToBottom();
 		}
 
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
 		SmartDashboard::PutNumber("Shooter Encoder: ", arm->encoderValue());
 
-		//SmartDashboard::PutNumber("Shoot Wait Time:", 0.4);
 		double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
 
-		//SmartDashboard::PutNumber("P:", 0.1);
-		//SmartDashboard::PutNumber("I:", 0.0);
-		//SmartDashboard::PutNumber("D:", 0.0);
 		double p = SmartDashboard::GetNumber("P:", 0.1);
 		double i = SmartDashboard::GetNumber("I:", 0.0);
 		double d = SmartDashboard::GetNumber("D:", 0.0);

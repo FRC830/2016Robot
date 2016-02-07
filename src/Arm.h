@@ -13,11 +13,10 @@
 
 class Arm {
 public:
-	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 20, CHEVAL_POSITION = 45, SHOOTING_POSITION = 110};
+	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 20, SHOOTING_POSITION = 110};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
 	void goToDown();
 	void goToIntake();
-	void goToCheval();
 	void goToShooting();
 	double targetPosition();
 	bool isAtTargetPosition();

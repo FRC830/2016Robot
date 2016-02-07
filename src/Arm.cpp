@@ -27,10 +27,6 @@ void Arm::goToDown(){
 	armPID->SetSetpoint(DOWN_POSITION);
 }
 
-void Arm::goToCheval(){
-	armPID->SetSetpoint(CHEVAL_POSITION);
-}
-
 void Arm::goToIntake(){
 	armPID->SetSetpoint(INTAKE_POSITION);
 }
