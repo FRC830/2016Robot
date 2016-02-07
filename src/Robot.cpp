@@ -39,6 +39,11 @@ private:
 
 	Timer * timer;
 
+	VictorSP * frontLeft;
+	VictorSP * backLeft;
+	VictorSP * frontRight;
+	VictorSP * backRight;
+
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
 	Shooter * shooter;
@@ -85,26 +90,53 @@ private:
 
 	void AutonomousPeriodic()
 	{
-		Obstacle obstacle;
+		Obstacle obstacle = LOW_BAR;
 
 		switch(obstacle){
 			case LOW_BAR:
+				//drive train
+				if(timer->Get() < 4.0){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
 				break;
 			case PORTCULLIS:
+				//drive train?
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
 				break;
 			case CHEVAL_DE_FRISE:
+				//rat tail?
 				break;
 			case MOAT:
+				//drive train
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
 				break;
 			case RAMPARTS:
+				//drive train
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
 				break;
 			case SALLYPORT:
+				//nothing for now
 				break;
 			case DRAWBRIDGE:
+				//still nothing
 				break;
 			case ROCK_WALL:
+				//drive train
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
 				break;
 			case ROUGH_TERRAIN:
+				//drive train
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
 				break;
 		}
 	}
