@@ -90,6 +90,10 @@ private:
 
 	void AutonomousPeriodic()
 	{
+		//where the robot starts on the field in relation to the obstacles
+		//1 is the low bar, 5 is against the secret passage
+		int location = 1;
+
 		Obstacle obstacle = LOW_BAR;
 
 		switch(obstacle){
@@ -107,6 +111,13 @@ private:
 				break;
 			case CHEVAL_DE_FRISE:
 				//rat tail?
+				if(timer->Get() < 2){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				else if(timer->Get() < 5){
+					ratTail->goToTop();
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
 				break;
 			case MOAT:
 				//drive train
@@ -121,10 +132,10 @@ private:
 				}
 				break;
 			case SALLYPORT:
-				//nothing for now
+				//nothing for now...maybe never
 				break;
 			case DRAWBRIDGE:
-				//still nothing
+				//still nothing-arm?
 				break;
 			case ROCK_WALL:
 				//drive train
@@ -138,6 +149,49 @@ private:
 					drive->ArcadeDrive(1.0, 0.0, false);
 				}
 				break;
+		}
+		//shooting code
+		switch(location){
+		case 1:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		case 2:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		case 3:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		case 4:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		case 5:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
 		}
 	}
 
