@@ -1,8 +1,14 @@
 #include "WPILib.h"
 #include "../wpiutils/830utilities.h"
 
+#include "Timer.h"
+
+#include "RobotDrive.h"
+
 #include "Arm.h"
 #include "Shooter.h"
+#include "RatTail.h"
+
 
 class Robot: public IterativeRobot
 {
@@ -27,9 +33,11 @@ private:
 
 	static const int TICKS_TO_FULL_SPEED = 100;
 
-	enum Obstacle{LOW_BAR, A, B, C, D}
+	enum Obstacle{LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
 
 	RobotDrive * drive;
+
+	Timer * timer;
 
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
@@ -71,24 +79,33 @@ private:
 
 	void AutonomousInit()
 	{
-
+		timer->Reset();
+		timer->Start();
 	}
 
 	void AutonomousPeriodic()
 	{
-		//a,b,c,d,e ( e is the low bar)
-		char type = 'a';
+		Obstacle obstacle;
 
-		//obstacle is always either a or b, unless the location is 1
-		char obstacle = 'a';
-
-		//either portcullis or cheval de frise
-		if(type == 'a'){
-
-		}
-		//
-		if(type == 'b'){
-
+		switch(obstacle){
+			case LOW_BAR:
+				break;
+			case PORTCULLIS:
+				break;
+			case CHEVAL_DE_FRISE:
+				break;
+			case MOAT:
+				break;
+			case RAMPARTS:
+				break;
+			case SALLYPORT:
+				break;
+			case DRAWBRIDGE:
+				break;
+			case ROCK_WALL:
+				break;
+			case ROUGH_TERRAIN:
+				break;
 		}
 	}
 
