@@ -25,8 +25,9 @@ private:
 	static const int TAIL_BOTTOM_DIO = 4;
 	static const int TAIL_TOP_DIO = 5;
 
-
 	static const int TICKS_TO_FULL_SPEED = 100;
+
+	enum Obstacle{LOW_BAR, A, B, C, D}
 
 	RobotDrive * drive;
 
@@ -75,7 +76,20 @@ private:
 
 	void AutonomousPeriodic()
 	{
+		//a,b,c,d,e ( e is the low bar)
+		char type = 'a';
 
+		//obstacle is always either a or b, unless the location is 1
+		char obstacle = 'a';
+
+		//either portcullis or cheval de frise
+		if(type == 'a'){
+
+		}
+		//either
+		if(type == 'b'){
+
+		}
 	}
 
 	void TeleopInit()
