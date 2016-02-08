@@ -1,6 +1,10 @@
 #include "WPILib.h"
 #include "../wpiutils/830utilities.h"
 
+#include "Timer.h"
+
+#include "RobotDrive.h"
+
 #include "Arm.h"
 #include "Shooter.h"
 #include "RatTail.h"
@@ -26,10 +30,18 @@ private:
 	static const int TAIL_BOTTOM_DIO = 4;
 	static const int TAIL_TOP_DIO = 5;
 
-
 	static const int TICKS_TO_FULL_SPEED = 100;
 
+	enum Obstacle{LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
+
 	RobotDrive * drive;
+
+	Timer * timer;
+
+	VictorSP * frontLeft;
+	VictorSP * backLeft;
+	VictorSP * frontRight;
+	VictorSP * backRight;
 
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
@@ -71,12 +83,115 @@ private:
 
 	void AutonomousInit()
 	{
-
+		timer->Reset();
+		timer->Start();
 	}
 
 	void AutonomousPeriodic()
 	{
+		//where the robot starts on the field in relation to the obstacles
+		//1 is the low bar, 5 is against the secret passage
+		int location = 1;
 
+		Obstacle obstacle = LOW_BAR;
+
+		switch(obstacle){
+			case LOW_BAR:
+				//drive train
+				if(timer->Get() < 4.0){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				break;
+			case PORTCULLIS:
+				//drive train?
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				break;
+			case CHEVAL_DE_FRISE:
+				//rat tail?
+				if(timer->Get() < 2){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				else if(timer->Get() < 5){
+					ratTail->goToTop();
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				break;
+			case MOAT:
+				//drive train
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				break;
+			case RAMPARTS:
+				//drive train
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				break;
+			case SALLYPORT:
+				//nothing for now...maybe never
+				break;
+			case DRAWBRIDGE:
+				//still nothing-arm?
+				break;
+			case ROCK_WALL:
+				//drive train
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				break;
+			case ROUGH_TERRAIN:
+				//drive train
+				if(timer->Get() < 4){
+					drive->ArcadeDrive(1.0, 0.0, false);
+				}
+				break;
+		}
+		//shooting code
+		switch(location){
+		case 1:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		case 2:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		case 3:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		case 4:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		case 5:
+			if(timer->Get() < 10){
+				drive->ArcadeDrive(1.0, 0.0, false);
+			}
+			else if(timer->Get() < 15){
+				shooter->shoot();
+			}
+			break;
+		}
 	}
 
 	void TeleopInit()
