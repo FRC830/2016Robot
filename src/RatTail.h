@@ -24,8 +24,8 @@ private:
 	DigitalInput * topSwitch;
 	Target target;
 
-	const double UP_SPEED = 0.5;
-	const double DOWN_SPEED = 0.3;
+	static constexpr float UP_SPEED = 0.5;
+	static constexpr float DOWN_SPEED = 0.3;
 };
 
 

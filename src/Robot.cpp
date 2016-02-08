@@ -3,6 +3,7 @@
 
 #include "Arm.h"
 #include "Shooter.h"
+#include "RatTail.h"
 
 class Robot: public IterativeRobot
 {
@@ -115,8 +116,8 @@ private:
 
 		double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
 
-		double p = SmartDashboard::GetNumber("P:", 0.1);
-		double i = SmartDashboard::GetNumber("I:", 0.0);
+		double p = SmartDashboard::GetNumber("P:", -0.1);
+		double i = SmartDashboard::GetNumber("I:", 12.5);
 		double d = SmartDashboard::GetNumber("D:", 0.0);
 		arm->setPID(p, i, d);
 

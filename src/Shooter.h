@@ -34,15 +34,15 @@ private:
 	Arm * arm;
 	Timer * timer;
 
-	const float ROLL_OUT_SPEED = 1.0;
-	const float ADJUST_SPEED = 0.1;
-	const float ROLL_IN_SPEED = -0.6;
-	const float ROLL_TO_SHOOT_SPEED = -1.0; //speed to intake when feeding ball from storage to shooter
-	const double ROLL_OUT_TIME = 1.0;//time to roll out completely
+	static constexpr float ROLL_OUT_SPEED = 1.0;
+	static constexpr float ADJUST_SPEED = 0.1;
+	static constexpr float ROLL_IN_SPEED = -0.6;
+	static constexpr float ROLL_TO_SHOOT_SPEED = -1.0; //speed to intake when feeding ball from storage to shooter
+	static constexpr float ROLL_OUT_TIME = 1.0;//time to roll out completely
 
-	const float SHOOT_SPEED = 1.0;
-	/*const*/ double SHOOT_WAIT_TIME = 0.4;//to wait to activate intake motor after activating shooter motor;
-	const double SHOOT_TIME =  1.0;//time to stop shooting
+	static constexpr float SHOOT_SPEED = 1.0;
+	/*constexpr*/ double SHOOT_WAIT_TIME = 0.4;//to wait to activate intake motor after activating shooter motor;
+	static constexpr float SHOOT_TIME =  1.0;//time to stop shooting
 
 	State state;
 };
