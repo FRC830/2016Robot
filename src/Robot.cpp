@@ -30,6 +30,11 @@ private:
 	static const int TAIL_BOTTOM_DIO = 4;
 	static const int TAIL_TOP_DIO = 5;
 
+	static const int GEAR_SHIFT_SOL_FORWARD = 0;
+	static const int GEAR_SHIFT_SOL_REVERSE = 1;
+	static const DoubleSolenoid::Value LOW_GEAR = DoubleSolenoid::kForward;
+	static const DoubleSolenoid::Value HIGH_GEAR = DoubleSolenoid::kReverse;
+
 	static const int TICKS_TO_FULL_SPEED = 100;
 
 	enum Obstacle{LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
@@ -37,6 +42,8 @@ private:
 	RobotDrive * drive;
 
 	Timer * timer;
+
+	DoubleSolenoid * gear_shift;
 
 	VictorSP * frontLeft;
 	VictorSP * backLeft;
@@ -77,7 +84,7 @@ private:
 			new DigitalInput(TAIL_TOP_DIO),
 			new VictorSP(TAIL_VICTOR_PWM)
 		);
-
+		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
 		SmartDashboard::init();
 	}
 
@@ -209,6 +216,12 @@ private:
 		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 
 		drive->ArcadeDrive(forward, turn, true);
+
+		if (pilot->ButtonState(F310Buttons::RightBumper)||pilot->ButtonState(F310Buttons::LeftBumper)){
+			gear_shift->Set(LOW_GEAR);
+		} else {
+			gear_shift->Set(HIGH_GEAR);
+		}
 
 		previousForward = forward;
 
