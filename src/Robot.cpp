@@ -13,8 +13,8 @@ class Robot: public IterativeRobot
 {
 private:
 
-	static const int FRONT_LEFT_PWM = 0;
-	static const int FRONT_RIGHT_PWM = 1;
+	static const int FRONT_LEFT_PWM = 0;//this pwm setup does not work with the gearbox
+	static const int FRONT_RIGHT_PWM = 1;//the front and back wheels can't be controlled separately
 	static const int BACK_LEFT_PWM = 2;
 	static const int BACK_RIGHT_PWM = 3;
 
