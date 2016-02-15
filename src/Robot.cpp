@@ -22,10 +22,12 @@ private:
 	static const int INTAKE_VICTOR_PWM = 5;
 	static const int ARM_VICTOR_PWM = 6;
 	static const int TAIL_VICTOR_PWM = 7;
+	static const int TEST_VICTOR = 8;
 
 	static const int ENCODER_1_DIO = 0;
 	static const int ENCODER_2_DIO = 1;
 	static const int INTAKE_DIO = 2;
+
 	static const int RESET_DIO = 3;
 	static const int TAIL_BOTTOM_DIO = 4;
 	static const int TAIL_TOP_DIO = 5;
@@ -55,6 +57,7 @@ private:
 	Shooter * shooter;
 	Arm * arm;
 	RatTail * ratTail;
+	VictorSP * testVictor;
 
 	void RobotInit()
 	{
@@ -86,6 +89,7 @@ private:
 		);
 		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
 		SmartDashboard::init();
+		testVictor = new VictorSP(TEST_VICTOR);
 	}
 
 	void AutonomousInit()
@@ -238,13 +242,25 @@ private:
 		}else if (copilot->DPadY() == -1){//for moving down after cheval
 			ratTail->goToBottom();
 		}
+		float testSpeed = 0;
+		if (copilot->RightTrigger()> .05){
+			testSpeed = copilot->RightTrigger();
+		}else if (copilot->LeftTrigger() > 0.5){
+			testSpeed = -copilot->LeftTrigger();
+		}
+		testVictor->Set(testSpeed);
 
+		SmartDashboard::PutNumber("Test Speed", testSpeed);
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
-		SmartDashboard::PutNumber("Shooter Encoder: ", arm->encoderValue());
+		SmartDashboard::PutNumber("Arm Encoder: ", arm->encoderValue());
 
 		double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
 
-		double p = SmartDashboard::GetNumber("P:", -0.1);
+		/*
+		SmartDashboard::PutNumber("P:",0.1);
+		SmartDashboard::PutNumber("I:",0.1);
+		SmartDashboard::PutNumber("D:",0.1); */
+		double p = SmartDashboard::GetNumber("P:", 0.1);
 		double i = SmartDashboard::GetNumber("I:", 12.5);
 		double d = SmartDashboard::GetNumber("D:", 0.0);
 		arm->setPID(p, i, d);

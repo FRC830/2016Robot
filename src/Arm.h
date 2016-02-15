@@ -13,7 +13,7 @@
 
 class Arm {
 public:
-	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 20, SHOOTING_POSITION = 110};
+	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 2000, SHOOTING_POSITION = 11000};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
 	void goToDown();
 	void goToIntake();

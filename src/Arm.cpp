@@ -14,10 +14,10 @@ Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMoto
 	resetSwitch = encResetSwitch;
 	encoder = armEncoder;
 	arm = armMotor;
-	armPID = new PIDController(-0.1, 0.1, 0, armEncoder, armMotor);
-	armPID->SetInputRange(-10000,10000);
-	armPID->SetOutputRange(-.5, .2);
-	armPID->SetAbsoluteTolerance(0.01);
+	armPID = new PIDController(0.1, 0.1, 0, armEncoder, armMotor);
+	armPID->SetInputRange(-1000,50000);
+	armPID->SetOutputRange(-0.2, 0.2);
+	armPID->SetAbsoluteTolerance(250);
 	armPID->SetSetpoint(DOWN_POSITION);
 
 	armPID->Enable();
