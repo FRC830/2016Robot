@@ -30,7 +30,7 @@ private:
 
 	static const int RESET_DIO = 3;
 	static const int TAIL_BOTTOM_DIO = 4;
-	static const int TAIL_TOP_DIO = 5;
+	//static const int TAIL_TOP_DIO = 5;
 
 	static const int GEAR_SHIFT_SOL_FORWARD = 0;
 	static const int GEAR_SHIFT_SOL_REVERSE = 1;
@@ -84,7 +84,6 @@ private:
 		);
 		ratTail = new RatTail(
 			new DigitalInput(TAIL_BOTTOM_DIO),
-			new DigitalInput(TAIL_TOP_DIO),
 			new VictorSP(TAIL_VICTOR_PWM)
 		);
 		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
@@ -215,7 +214,7 @@ private:
 
 	void TeleopPeriodic(){
 		float targetForward = pilot->LeftY();
-		float turn = pilot->RightY();
+		float turn = pilot->RightX();
 
 		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 

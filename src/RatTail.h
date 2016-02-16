@@ -13,19 +13,20 @@
 
 class RatTail {
 public:
-	RatTail(DigitalInput * bottom, DigitalInput * top, VictorSP * tailMotor);
+	RatTail(DigitalInput * bottom, VictorSP * tailMotor);
 	void goToTop();
 	void goToBottom();
 	void update();
 private:
-	enum Target{BOTTOM, TOP};
+	enum State{CHECK_BOTTOM, BOTTOM, TOP, STATIONARY};
 	VictorSP * motor;
 	DigitalInput * bottomSwitch;
-	DigitalInput * topSwitch;
-	Target target;
+	Timer * timer;
+	State state;
 
 	static constexpr float UP_SPEED = 0.5;
 	static constexpr float DOWN_SPEED = 0.3;
+	static constexpr float UP_TIME = 1;
 };
 
 
