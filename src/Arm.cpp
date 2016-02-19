@@ -15,24 +15,36 @@ Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMoto
 	encoder = armEncoder;
 	arm = armMotor;
 	armPID = new PIDController(0.1, 0.1, 0, armEncoder, armMotor);
-	armPID->SetInputRange(-1000,50000);
-	armPID->SetOutputRange(-0.2, 0.2);
-	armPID->SetAbsoluteTolerance(250);
+	armPID->SetInputRange(-100,50000);
+	armPID->SetOutputRange(-0.15, 0.3);
+	armPID->SetAbsoluteTolerance(500);
 	armPID->SetSetpoint(DOWN_POSITION);
 
 	armPID->Enable();
 }
 
 void Arm::goToDown(){
+	armPID->Enable();
+	goingToSwitch = false;
 	armPID->SetSetpoint(DOWN_POSITION);
 }
 
 void Arm::goToIntake(){
-	armPID->SetSetpoint(INTAKE_POSITION);
+	armPID->Enable();
+	goingToSwitch = false;
+	armPID->SetSetpoint(DOWN_POSITION);
+	goingToIntake = true;
 }
 
 void Arm::goToShooting(){
+	armPID->Enable();
+	goingToSwitch = false;
 	armPID->SetSetpoint(SHOOTING_POSITION);
+}
+
+void Arm::goToSwitch(){
+	armPID->Disable();
+	goingToSwitch = true;
 }
 
 double Arm::targetPosition(){
@@ -66,8 +78,20 @@ double Arm::pidSetpoint(){
 }
 
 void Arm::update(){
-	if(bottomSwitchPressed())
+	if(bottomSwitchPressed()){
 		encoder->Reset();
+		if(goingToIntake){
+			armPID->SetSetpoint(INTAKE_POSITION);
+			goingToIntake = false;
+		}
+		if(goingToSwitch){
+			armPID->Enable();
+			goingToSwitch = false;
+		}
+	}
+	if(goingToSwitch){
+		arm->Set(-0.2);
+	}
 }
 
 Arm::~Arm() {}

@@ -13,7 +13,8 @@
 
 class Arm {
 public:
-	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 2000, SHOOTING_POSITION = 11000};
+	bool goingToIntake = false;
+	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 400, SHOOTING_POSITION = 2100};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
 	void goToDown();
 	void goToIntake();
@@ -23,6 +24,8 @@ public:
 	double encoderValue();
 	void setPID(double p, double i, double d);
 	double pidSetpoint();
+	bool bottomSwitchPressed();//used to be private
+	void goToSwitch();
 
 	void reset();
 	void update();
@@ -32,12 +35,11 @@ private:
 	Encoder * encoder;
 	VictorSP * arm;
 	PIDController * armPID;
+	bool goingToSwitch = false;
 
-	bool bottomSwitchPressed();
-
-	static const int MARGIN_OF_ERROR = 5;
-	static const int ARM_UP_SPEED = 1.0;
-	static const int ARM_DOWN_SPEED = -0.5;
+	static const int MARGIN_OF_ERROR = 150;
+	//static const int ARM_UP_SPEED = 1.0;
+	//static const int ARM_DOWN_SPEED = -0.5;
 };
 
 #endif /* SRC_ARM_H_ */

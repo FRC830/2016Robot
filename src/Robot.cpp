@@ -13,22 +13,22 @@ class Robot: public IterativeRobot
 {
 private:
 
-	static const int FRONT_LEFT_PWM = 0;//this pwm setup does not work with the gearbox
-	static const int FRONT_RIGHT_PWM = 1;//the front and back wheels can't be controlled separately
-	static const int BACK_LEFT_PWM = 2;
-	static const int BACK_RIGHT_PWM = 3;
+	static const int LEFT_PWM_ONE = 0;
+	static const int LEFT_PWM_TWO = 4;
+	static const int RIGHT_PWM_ONE = 1;
+	static const int RIGHT_PWM_TWO = 3;
 
-	static const int SHOOTER_VICTOR_PWM = 4;
-	static const int INTAKE_VICTOR_PWM = 5;
-	static const int ARM_VICTOR_PWM = 6;
-	static const int TAIL_VICTOR_PWM = 7;
+	static const int SHOOTER_VICTOR_PWM = 6;
+	static const int INTAKE_VICTOR_PWM = 2;
+	static const int ARM_VICTOR_PWM = 7;
+	static const int TAIL_VICTOR_PWM = 5;
 	static const int TEST_VICTOR = 8;
 
 	static const int ENCODER_1_DIO = 0;
 	static const int ENCODER_2_DIO = 1;
 	static const int INTAKE_DIO = 2;
 
-	static const int RESET_DIO = 3;
+	static const int ARM_RESET_DIO = 3;
 	static const int TAIL_BOTTOM_DIO = 4;
 	//static const int TAIL_TOP_DIO = 5;
 
@@ -62,17 +62,17 @@ private:
 	void RobotInit()
 	{
 		drive = new RobotDrive(
-			new VictorSP(FRONT_LEFT_PWM),
-			new VictorSP(BACK_LEFT_PWM),
-			new VictorSP(FRONT_RIGHT_PWM),
-			new VictorSP(BACK_RIGHT_PWM)
+			new VictorSP(LEFT_PWM_ONE),
+			new VictorSP(LEFT_PWM_TWO),
+			new VictorSP(RIGHT_PWM_ONE),
+			new VictorSP(RIGHT_PWM_TWO)
 		);
 
 		pilot = new GamepadF310(0);
 		copilot = new GamepadF310(1);
 
 		arm = new Arm(
-			new DigitalInput(RESET_DIO),
+			new DigitalInput(ARM_RESET_DIO),
 			new Encoder(ENCODER_1_DIO, ENCODER_2_DIO),
 			new VictorSP(ARM_VICTOR_PWM)
 		);
@@ -208,25 +208,26 @@ private:
 	{
 		arm->reset();
 		shooter->reset();
+		arm->goToSwitch();
 	}
 
 	float previousForward = 0;
 
 	void TeleopPeriodic(){
 		float targetForward = pilot->LeftY();
-		float turn = pilot->RightX();
+		float turn = pilot->RightX()/2;
 
 		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 
-		drive->ArcadeDrive(forward, turn, true);
+		previousForward = forward;
+
+		drive->ArcadeDrive(-forward, turn, true);
 
 		if (pilot->ButtonState(F310Buttons::RightBumper)||pilot->ButtonState(F310Buttons::LeftBumper)){
 			gear_shift->Set(LOW_GEAR);
 		} else {
 			gear_shift->Set(HIGH_GEAR);
 		}
-
-		previousForward = forward;
 
 		if (copilot->ButtonState(F310Buttons::A)) { //gather a ball
 			shooter->rollIn();
@@ -242,16 +243,17 @@ private:
 			ratTail->goToBottom();
 		}
 		float testSpeed = 0;
-		if (copilot->RightTrigger()> .05){
-			testSpeed = copilot->RightTrigger();
-		}else if (copilot->LeftTrigger() > 0.5){
-			testSpeed = -copilot->LeftTrigger();
+		if (copilot->RightTrigger()> 0.05){
+			testSpeed = copilot->RightTrigger()/3.0;
+		}else if (copilot->LeftTrigger() > 0.05){
+			testSpeed = -copilot->LeftTrigger()/3.0;
 		}
 		testVictor->Set(testSpeed);
 
 		SmartDashboard::PutNumber("Test Speed", testSpeed);
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
 		SmartDashboard::PutNumber("Arm Encoder: ", arm->encoderValue());
+		SmartDashboard::PutBoolean("Arm Switch: ", arm->bottomSwitchPressed());
 
 		double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
 
@@ -259,8 +261,8 @@ private:
 		SmartDashboard::PutNumber("P:",0.1);
 		SmartDashboard::PutNumber("I:",0.1);
 		SmartDashboard::PutNumber("D:",0.1); */
-		double p = SmartDashboard::GetNumber("P:", 0.1);
-		double i = SmartDashboard::GetNumber("I:", 12.5);
+		double p = SmartDashboard::GetNumber("P:", 0.075);
+		double i = SmartDashboard::GetNumber("I:", 15);
 		double d = SmartDashboard::GetNumber("D:", 0.0);
 		arm->setPID(p, i, d);
 
