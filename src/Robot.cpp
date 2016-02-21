@@ -95,6 +95,7 @@ private:
 	{
 		timer->Reset();
 		timer->Start();
+		arm->goToSwitch();
 	}
 
 	void AutonomousPeriodic()
@@ -249,6 +250,13 @@ private:
 			testSpeed = -copilot->LeftTrigger()/3.0;
 		}
 		testVictor->Set(testSpeed);
+
+		if(copilot->DPadX() == -1){
+			gear_shift->Set(LOW_GEAR);
+		}
+		if(copilot->DPadX() == 1){
+			gear_shift->Set(HIGH_GEAR);
+		}
 
 		SmartDashboard::PutNumber("Test Speed", testSpeed);
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
