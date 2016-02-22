@@ -14,7 +14,7 @@
 class Arm {
 public:
 	bool goingToIntake = false;
-	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 400, SHOOTING_POSITION = 2100};
+	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 200, SHOOTING_POSITION = 2300};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
 	void goToDown();
 	void goToIntake();
@@ -37,7 +37,7 @@ private:
 	PIDController * armPID;
 	bool goingToSwitch = false;
 
-	static const int MARGIN_OF_ERROR = 150;
+	static const int MARGIN_OF_ERROR = 50;
 	//static const int ARM_UP_SPEED = 1.0;
 	//static const int ARM_DOWN_SPEED = -0.5;
 };

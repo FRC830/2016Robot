@@ -16,7 +16,7 @@ Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMoto
 	arm = armMotor;
 	armPID = new PIDController(0.1, 0.1, 0, armEncoder, armMotor);
 	armPID->SetInputRange(-100,50000);
-	armPID->SetOutputRange(-0.15, 0.3);
+	armPID->SetOutputRange(-0.15, 0.35);
 	armPID->SetAbsoluteTolerance(500);
 	armPID->SetSetpoint(DOWN_POSITION);
 
@@ -43,6 +43,7 @@ void Arm::goToShooting(){
 }
 
 void Arm::goToSwitch(){
+	armPID->SetSetpoint(DOWN_POSITION);
 	armPID->Disable();
 	goingToSwitch = true;
 }
@@ -91,6 +92,14 @@ void Arm::update(){
 	}
 	if(goingToSwitch){
 		arm->Set(-0.2);
+	}
+	if(!goingToSwitch){
+		if(isAtTargetPosition()){
+			armPID->Disable();
+		}
+		else{
+			armPID->Enable();
+		}
 	}
 }
 

@@ -35,7 +35,7 @@ private:
 	Timer * timer;
 
 	static constexpr float ROLL_OUT_SPEED = -1.0;
-	static constexpr float ADJUST_SPEED = -0.1;
+	static constexpr float ADJUST_SPEED = -0.2;
 	static constexpr float ROLL_IN_SPEED = 0.6;
 	static constexpr float ROLL_TO_SHOOT_SPEED = 1.0; //speed to intake when feeding ball from storage to shooter
 	static constexpr float ROLL_OUT_TIME = 1.0;//time to roll out completely

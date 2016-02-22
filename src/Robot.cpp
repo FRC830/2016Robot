@@ -37,7 +37,7 @@ private:
 	static const DoubleSolenoid::Value LOW_GEAR = DoubleSolenoid::kForward;
 	static const DoubleSolenoid::Value HIGH_GEAR = DoubleSolenoid::kReverse;
 
-	static const int TICKS_TO_FULL_SPEED = 100;
+	static const int TICKS_TO_FULL_SPEED = 40;
 
 	enum Obstacle{LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
 
@@ -57,7 +57,7 @@ private:
 	Shooter * shooter;
 	Arm * arm;
 	RatTail * ratTail;
-	VictorSP * testVictor;
+	//VictorSP * testVictor;
 
 	void RobotInit()
 	{
@@ -88,7 +88,7 @@ private:
 		);
 		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
 		SmartDashboard::init();
-		testVictor = new VictorSP(TEST_VICTOR);
+		//testVictor = new VictorSP(TEST_VICTOR);
 	}
 
 	void AutonomousInit()
@@ -216,7 +216,7 @@ private:
 
 	void TeleopPeriodic(){
 		float targetForward = pilot->LeftY();
-		float turn = pilot->RightX()/2;
+		float turn = pilot->RightX()/1.5;
 
 		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 
@@ -242,23 +242,18 @@ private:
 			ratTail->goToTop();
 		}else if (copilot->DPadY() == -1){//for moving down after cheval
 			ratTail->goToBottom();
+		}else if (copilot->ButtonState(F310Buttons::Back)){
+			arm->goToSwitch();
 		}
 		float testSpeed = 0;
-		if (copilot->RightTrigger()> 0.05){
+		/*if (copilot->RightTrigger()> 0.05){
 			testSpeed = copilot->RightTrigger()/3.0;
 		}else if (copilot->LeftTrigger() > 0.05){
 			testSpeed = -copilot->LeftTrigger()/3.0;
-		}
-		testVictor->Set(testSpeed);
+		}*/
+		//testVictor->Set(testSpeed);
 
-		if(copilot->DPadX() == -1){
-			gear_shift->Set(LOW_GEAR);
-		}
-		if(copilot->DPadX() == 1){
-			gear_shift->Set(HIGH_GEAR);
-		}
-
-		SmartDashboard::PutNumber("Test Speed", testSpeed);
+		//SmartDashboard::PutNumber("Test Speed", testSpeed);
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
 		SmartDashboard::PutNumber("Arm Encoder: ", arm->encoderValue());
 		SmartDashboard::PutBoolean("Arm Switch: ", arm->bottomSwitchPressed());
