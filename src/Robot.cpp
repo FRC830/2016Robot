@@ -8,6 +8,7 @@
 #include "Arm.h"
 #include "Shooter.h"
 #include "RatTail.h"
+#include "Camera.h"
 
 class Robot: public IterativeRobot
 {
@@ -39,6 +40,11 @@ private:
 
 	static const int TICKS_TO_FULL_SPEED = 40;
 
+	const int kCam0Button = 1;
+	const int kCam1Button = 2;
+	const bool kError = false;
+	const bool kOk = true;
+
 	enum Obstacle{LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
 
 	RobotDrive * drive;
@@ -57,6 +63,7 @@ private:
 	Shooter * shooter;
 	Arm * arm;
 	RatTail * ratTail;
+	CAMERAFEEDS * camerafeeds;
 	//VictorSP * testVictor;
 
 	void RobotInit()
@@ -89,6 +96,10 @@ private:
 		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
 		SmartDashboard::init();
 		//testVictor = new VictorSP(TEST_VICTOR);
+
+		camerafeeds = new CAMERAFEEDS;
+
+		camerafeeds -> init();
 	}
 
 	void AutonomousInit()
