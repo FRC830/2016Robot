@@ -14,7 +14,7 @@
 class Arm {
 public:
 	bool goingToIntake = false;
-	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 200, SHOOTING_POSITION = 2300};
+	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 200, SHOOTING_POSITION = 2300, CHEVAL_POSITION = 2000};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
 	void goToDown();
 	void goToIntake();
@@ -26,6 +26,7 @@ public:
 	double pidSetpoint();
 	bool bottomSwitchPressed();//used to be private
 	void goToSwitch();
+	void Cheval();
 
 	void reset();
 	void update();

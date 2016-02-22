@@ -244,6 +244,8 @@ private:
 			ratTail->goToBottom();
 		}else if (copilot->ButtonState(F310Buttons::Back)){
 			arm->goToSwitch();
+		}else if (copilot->ButtonState(F310Buttons::Start)){
+			arm->Cheval();
 		}
 		float testSpeed = 0;
 		/*if (copilot->RightTrigger()> 0.05){

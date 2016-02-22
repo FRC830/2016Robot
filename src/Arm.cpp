@@ -48,6 +48,10 @@ void Arm::goToSwitch(){
 	goingToSwitch = true;
 }
 
+void Arm::Cheval(){
+	armPID->SetSetpoint(CHEVAL_POSITION);
+}
+
 double Arm::targetPosition(){
 	return armPID->GetSetpoint();
 }
