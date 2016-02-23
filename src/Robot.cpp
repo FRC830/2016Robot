@@ -42,8 +42,6 @@ private:
 
 	const int kCam0Button = 1;
 	const int kCam1Button = 2;
-	const bool kError = false;
-	const bool kOk = true;
 
 	enum Obstacle{LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
 
@@ -258,8 +256,8 @@ private:
 		}else if (copilot->ButtonState(F310Buttons::Start)){
 			arm->Cheval();
 		}
-		float testSpeed = 0;
-		/*if (copilot->RightTrigger()> 0.05){
+		/*float testSpeed = 0;
+		if (copilot->RightTrigger()> 0.05){
 			testSpeed = copilot->RightTrigger()/3.0;
 		}else if (copilot->LeftTrigger() > 0.05){
 			testSpeed = -copilot->LeftTrigger()/3.0;

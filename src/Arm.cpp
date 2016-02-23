@@ -8,7 +8,9 @@
 #include <Arm.h>
 #include <WPILib.h>
 #include "../wpiutils/830utilities.h"
-#include <cmath> using namespace std
+#include <cmath>
+
+using namespace std;
 
 Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor) {
 	resetSwitch = encResetSwitch;
