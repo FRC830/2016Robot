@@ -12,6 +12,9 @@
 
 class Robot: public IterativeRobot
 {
+public:
+	enum Obstacle{NOTHING, LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
+
 private:
 
 	static const int LEFT_PWM_ONE = 0;
@@ -24,6 +27,9 @@ private:
 	static const int ARM_VICTOR_PWM = 7;
 	static const int TAIL_VICTOR_PWM = 5;
 	static const int TEST_VICTOR = 8;
+
+	static const int INTAKE_PDP_CHANNEL = 11;
+	static const float INTAKE_STOP_TIME = 1.0;
 
 	static const int ENCODER_1_DIO = 0;
 	static const int ENCODER_2_DIO = 1;
@@ -44,6 +50,8 @@ private:
 	const int kCam1Button = 2;
 
 	enum Obstacle{LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
+	PowerDistributionPanel * pdp;
+	Timer * intakeTimer;
 
 	RobotDrive * drive;
 
@@ -64,6 +72,12 @@ private:
 	CameraFeeds * camerafeeds;
 	//VictorSP * testVictor;
 
+	SendableChooser * autonChooser;
+
+	void arcadeDrive(float forward, float turn, bool squared = false){
+		drive->ArcadeDrive(-forward, turn, squared);
+	}
+
 	void RobotInit()
 	{
 		drive = new RobotDrive(
@@ -81,6 +95,9 @@ private:
 			new Encoder(ENCODER_1_DIO, ENCODER_2_DIO),
 			new VictorSP(ARM_VICTOR_PWM)
 		);
+
+		pdp = new PowerDistributionPanel();
+		intakeTimer = new Timer();
 		shooter = new Shooter(
 			new DigitalInput(INTAKE_DIO),
 			new VictorSP(INTAKE_VICTOR_PWM),
@@ -105,6 +122,9 @@ private:
 		timer->Reset();
 		timer->Start();
 		arm->goToSwitch();
+
+		autonChooser = new SendableChooser();
+		autonChooser->AddObject("Low Bar", LOW_BAR);
 	}
 
 	void AutonomousPeriodic()
@@ -119,35 +139,59 @@ private:
 			case LOW_BAR:
 				//drive train
 				if(timer->Get() < 4.0){
-					drive->ArcadeDrive(1.0, 0.0, false);
+					arcadeDrive(0.75, 0.0, false);
 				}
 				break;
 			case PORTCULLIS:
 				//drive train?
-				if(timer->Get() < 4){
-					drive->ArcadeDrive(1.0, 0.0, false);
+				if(timer->Get() < 2){
+					arm->goToSwitch();
+					ratTail->goToBottom();
+				}
+				else if(timer->Get() < 4){
+					arcadeDrive(0.75, 0.0, false);
+				}
+				else if(!ratTail->atTop()){
+					ratTail->goToTop();
+					timer->Reset();
+					timer->Start();
+				}
+				else if(timer->Get() < 2){
+					arcadeDrive(0.75, 0.0, false);
+				}
+				else{
+					arcadeDrive(0.0, 0.0, false);
 				}
 				break;
 			case CHEVAL_DE_FRISE:
 				//rat tail?
 				if(timer->Get() < 2){
-					drive->ArcadeDrive(1.0, 0.0, false);
+					arcadeDrive(1.0, 0.0, false);
 				}
-				else if(timer->Get() < 5){
+				else if(!ratTail->atTop()){
+					timer->Reset();
+					timer->Start();
 					ratTail->goToTop();
-					drive->ArcadeDrive(1.0, 0.0, false);
+					arcadeDrive(0.0, 0.0, false);
 				}
+				else if(timer->Get() < 1){
+					arcadeDrive(0.5, 0.0, false);
+				}
+				else{
+					arcadeDrive(0.0, 0.0, false);
+				}
+
 				break;
 			case MOAT:
 				//drive train
 				if(timer->Get() < 4){
-					drive->ArcadeDrive(1.0, 0.0, false);
+					arcadeDrive(1.0, 0.0, false);
 				}
 				break;
 			case RAMPARTS:
 				//drive train
 				if(timer->Get() < 4){
-					drive->ArcadeDrive(1.0, 0.0, false);
+					arcadeDrive(1.0, 0.0, false);
 				}
 				break;
 			case SALLYPORT:
@@ -159,21 +203,24 @@ private:
 			case ROCK_WALL:
 				//drive train
 				if(timer->Get() < 4){
-					drive->ArcadeDrive(1.0, 0.0, false);
+					arcadeDrive(1.0, 0.0, false);
 				}
 				break;
 			case ROUGH_TERRAIN:
 				//drive train
 				if(timer->Get() < 4){
-					drive->ArcadeDrive(1.0, 0.0, false);
+					arcadeDrive(1.0, 0.0, false);
 				}
 				break;
+			default:
+				//Do Nothing
+				arcadeDrive(0,0,false);
 		}
 		//shooting code
 		switch(location){
 		case 1:
 			if(timer->Get() < 10){
-				drive->ArcadeDrive(1.0, 0.0, false);
+				arcadeDrive(1.0, 0.0, false);
 			}
 			else if(timer->Get() < 15){
 				shooter->shoot();
@@ -181,7 +228,7 @@ private:
 			break;
 		case 2:
 			if(timer->Get() < 10){
-				drive->ArcadeDrive(1.0, 0.0, false);
+				arcadeDrive(1.0, 0.0, false);
 			}
 			else if(timer->Get() < 15){
 				shooter->shoot();
@@ -189,7 +236,7 @@ private:
 			break;
 		case 3:
 			if(timer->Get() < 10){
-				drive->ArcadeDrive(1.0, 0.0, false);
+				arcadeDrive(1.0, 0.0, false);
 			}
 			else if(timer->Get() < 15){
 				shooter->shoot();
@@ -197,7 +244,7 @@ private:
 			break;
 		case 4:
 			if(timer->Get() < 10){
-				drive->ArcadeDrive(1.0, 0.0, false);
+				arcadeDrive(1.0, 0.0, false);
 			}
 			else if(timer->Get() < 15){
 				shooter->shoot();
@@ -205,7 +252,7 @@ private:
 			break;
 		case 5:
 			if(timer->Get() < 10){
-				drive->ArcadeDrive(1.0, 0.0, false);
+				arcadeDrive(1.0, 0.0, false);
 			}
 			else if(timer->Get() < 15){
 				shooter->shoot();
@@ -231,7 +278,7 @@ private:
 
 		previousForward = forward;
 
-		drive->ArcadeDrive(-forward, turn, true);
+		arcadeDrive(forward, turn, true);
 
 		if (pilot->ButtonState(F310Buttons::RightBumper)||pilot->ButtonState(F310Buttons::LeftBumper)){
 			gear_shift->Set(LOW_GEAR);
@@ -255,6 +302,17 @@ private:
 			arm->goToSwitch();
 		}else if (copilot->ButtonState(F310Buttons::Start)){
 			arm->Cheval();
+		}
+
+		if(pdp->GetCurrent(INTAKE_PDP_CHANNEL) > 10.0){
+			intakeTimer->Start();
+		}
+		else{
+			intakeTimer->Reset();
+			intakeTimer->Stop();
+		}
+		if(intakeTimer->Get() > INTAKE_STOP_TIME){
+			shooter->stop();
 		}
 		/*float testSpeed = 0;
 		if (copilot->RightTrigger()> 0.05){

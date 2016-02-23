@@ -13,7 +13,8 @@ RatTail::RatTail(DigitalInput * bottom, VictorSP * tailMotor){
 	motor = tailMotor;
 	bottomSwitch = bottom;
 	timer = new Timer();
-	state = TOP;
+	state = BOTTOM;
+	position = MOVING;
 }
 
 void RatTail::goToBottom(){
@@ -24,20 +25,31 @@ void RatTail::goToTop(){
 	state = CHECK_BOTTOM;
 }
 
+bool RatTail::atTop(){
+	return position == TOP;
+}
+
+bool RatTail::atBottom(){
+	return position == BOTTOM;
+}
+
 void RatTail::update(){
 	switch(state){
 		case BOTTOM:
 			if(!bottomSwitch->Get()){
 				motor->Set(DOWN_SPEED);
+				position = MOVING;
 			}
 			else{
 				motor->Set(0);
 				state = STATIONARY;
+				position = BOTTOM;
 			}
 			break;
 		case CHECK_BOTTOM:
 			if(!bottomSwitch->Get()){
 				motor->Set(DOWN_SPEED);
+				position = MOVING;
 			}
 			else{
 				motor->Set(0);
@@ -53,6 +65,7 @@ void RatTail::update(){
 			}
 			else{
 				motor->Set(0);
+				position = TOP;
 				timer->Stop();
 				timer->Reset();
 				state = STATIONARY;

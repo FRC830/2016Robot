@@ -16,13 +16,17 @@ public:
 	RatTail(DigitalInput * bottom, VictorSP * tailMotor);
 	void goToTop();
 	void goToBottom();
+	bool atTop();
+	bool atBottom();
 	void update();
 private:
 	enum State{CHECK_BOTTOM, BOTTOM, TOP, STATIONARY};
+	enum Position{BOTTOM, TOP, MOVING};
 	VictorSP * motor;
 	DigitalInput * bottomSwitch;
 	Timer * timer;
 	State state;
+	Position position;
 
 	static constexpr float UP_SPEED = 0.5;
 	static constexpr float DOWN_SPEED = 0.3;
