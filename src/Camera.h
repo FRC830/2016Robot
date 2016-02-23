@@ -10,14 +10,14 @@
 #ifndef SRC_CAMERAFEEDS_H_
 #define SRC_CAMERAFEEDS_H_
 
-class CAMERAFEEDS {
+class CameraFeeds {
 public:
 
 	const int kBtCamFront = 1;
 	const int kBtCamBack = 2;
 	//CAMERAFEEDS(Joystick *newJoy);
-	CAMERAFEEDS();
-	~CAMERAFEEDS();
+	CameraFeeds();
+	~CameraFeeds();
 
 	void init();
 	void run();

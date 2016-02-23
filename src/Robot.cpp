@@ -61,7 +61,7 @@ private:
 	Shooter * shooter;
 	Arm * arm;
 	RatTail * ratTail;
-	CAMERAFEEDS * camerafeeds;
+	CameraFeeds * camerafeeds;
 	//VictorSP * testVictor;
 
 	void RobotInit()
@@ -95,9 +95,9 @@ private:
 		SmartDashboard::init();
 		//testVictor = new VictorSP(TEST_VICTOR);
 
-		camerafeeds = new CAMERAFEEDS;
+		camerafeeds = new CameraFeeds;
 
-		camerafeeds -> init();
+		camerafeeds->init();
 	}
 
 	void AutonomousInit()
@@ -244,9 +244,9 @@ private:
 		}else if (copilot->ButtonState(F310Buttons::B)){ //cancel gathering a ball
 			shooter->stop();
 		}else if (copilot->ButtonState(F310Buttons::X)){ //eject a ball
-			shooter-> rollOut();
+			shooter->rollOut();
 		}else if (copilot->ButtonState(F310Buttons::Y)){ //shoot a ball
-			shooter -> shoot();
+			shooter->shoot();
 		}else if (copilot->DPadY() == 1){
 			ratTail->goToTop();
 		}else if (copilot->DPadY() == -1){//for moving down after cheval
