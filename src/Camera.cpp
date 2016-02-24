@@ -12,11 +12,11 @@ CameraFeeds::CameraFeeds(){
 	int imaqError;
 	imaqError = IMAQdxOpenCamera(camNameFront, IMAQdxCameraControlModeController, &camFront);
 	if(imaqError != IMAQdxErrorSuccess) {
-		DriverStation::ReportError("IMAQdxOpenCamera error: " + std::to_string((long)imaqError) + "\n");
+		DriverStation::ReportError("IMAQdxOpenCamera error: " + std::to_string(imaqError) + "\n");
 	}
 	imaqError = IMAQdxOpenCamera(camNameBack, IMAQdxCameraControlModeController, &camBack);
 	if(imaqError != IMAQdxErrorSuccess) {
-		DriverStation::ReportError("IMAQdxOpenCamera error: " + std::to_string((long)imaqError) + "\n");
+		DriverStation::ReportError("IMAQdxOpenCamera error: " + std::to_string(imaqError) + "\n");
 	}
 
 	curCam = camFront;
@@ -48,17 +48,16 @@ void CameraFeeds::changeCam(int newId) {
 
 	imaqError = IMAQdxConfigureGrab(curCam);
 	if(imaqError != IMAQdxErrorSuccess) {
-		DriverStation::ReportError("IMAQdxConfigureGrab error: " + std::to_string((long)imaqError) + "\n");
+		DriverStation::ReportError("IMAQdxConfigureGrab error: " + std::to_string(imaqError) + "\n");
 	}
 	IMAQdxStartAcquisition(curCam);
 	//curCam = newId;
 }
 
 void CameraFeeds::updateCam() {
-	int imaqError;
-	imaqError = IMAQdxGrab(curCam, frame, true, NULL);
+	int imaqError = IMAQdxGrab(curCam, frame, true, NULL);
 	if(imaqError != IMAQdxErrorSuccess) {
-		DriverStation::ReportError("IMAQdxGrab error: " + std::to_string((long)imaqError) + "\n");
+		DriverStation::ReportError("IMAQdxGrab error: " + std::to_string(imaqError) + "\n");
 	}
 	server->SetImage(frame);
 
