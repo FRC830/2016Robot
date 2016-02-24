@@ -21,7 +21,7 @@ public:
 	void update();
 private:
 	enum State{CHECK_BOTTOM, BOTTOM, TOP, STATIONARY};
-	enum Position{BOTTOM, TOP, MOVING};
+	enum Position{POS_BOTTOM, POS_TOP, POS_MOVING};
 	VictorSP * motor;
 	DigitalInput * bottomSwitch;
 	Timer * timer;

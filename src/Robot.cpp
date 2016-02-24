@@ -29,7 +29,7 @@ private:
 	static const int TEST_VICTOR = 8;
 
 	static const int INTAKE_PDP_CHANNEL = 11;
-	static const float INTAKE_STOP_TIME = 1.0;
+	static constexpr float INTAKE_STOP_TIME = 1.0;
 
 	static const int ENCODER_1_DIO = 0;
 	static const int ENCODER_2_DIO = 1;
@@ -49,7 +49,6 @@ private:
 	const int kCam0Button = 1;
 	const int kCam1Button = 2;
 
-	enum Obstacle{LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
 	PowerDistributionPanel * pdp;
 	Timer * intakeTimer;
 
@@ -124,7 +123,7 @@ private:
 		arm->goToSwitch();
 
 		autonChooser = new SendableChooser();
-		autonChooser->AddObject("Low Bar", LOW_BAR);
+		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
 	}
 
 	void AutonomousPeriodic()
