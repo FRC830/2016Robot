@@ -79,6 +79,7 @@ private:
 
 	void RobotInit()
 	{
+		autonChooser = new SendableChooser();
 		drive = new RobotDrive(
 			new VictorSP(LEFT_PWM_ONE),
 			new VictorSP(LEFT_PWM_TWO),
@@ -123,7 +124,13 @@ private:
 		arm->goToSwitch();
 
 		autonChooser = new SendableChooser();
-		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
+		autonChooser->AddDefault("Low Bar", &LOW_BAR);
+		autonChooser->AddObject("Do Nothing", &NOTHING);
+		autonChooser->AddObject("Low Bar", &LOW_BAR);
+		autonChooser->AddObject("Portcullis", &PORTCULLIS);
+		autonChooser->AddObject("Cheval de Frise", &CHEVAL_DE_FRISE);
+		autonChooser->AddObject("Moat", &MOAT);
+		autonChooser->AddObject("Ramparts", &RAMPARTS);
 	}
 
 	void AutonomousPeriodic()
