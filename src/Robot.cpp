@@ -124,13 +124,13 @@ private:
 		arm->goToSwitch();
 
 		autonChooser = new SendableChooser();
-		autonChooser->AddDefault("Low Bar", &LOW_BAR);
-		autonChooser->AddObject("Do Nothing", &NOTHING);
-		autonChooser->AddObject("Low Bar", &LOW_BAR);
-		autonChooser->AddObject("Portcullis", &PORTCULLIS);
-		autonChooser->AddObject("Cheval de Frise", &CHEVAL_DE_FRISE);
-		autonChooser->AddObject("Moat", &MOAT);
-		autonChooser->AddObject("Ramparts", &RAMPARTS);
+		autonChooser->AddDefault("Low Bar", new Obstacle(LOW_BAR));
+		autonChooser->AddObject("Do Nothing", new Obstacle(NOTHING));
+		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
+		autonChooser->AddObject("Portcullis", new Obstacle(PORTCULLIS));
+		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
+		autonChooser->AddObject("Moat", new Obstacle(MOAT));
+		autonChooser->AddObject("Ramparts", new Obstacle(RAMPARTS));
 	}
 
 	void AutonomousPeriodic()
