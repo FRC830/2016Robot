@@ -22,7 +22,6 @@ public:
 	void rollOut();
 	void shoot();
 	bool hasBall();
-	void setShootWaitTime(double shootWaitTime);
 
 	void reset();
 	void update();
@@ -35,14 +34,14 @@ private:
 	Timer * timer;
 
 	static constexpr float ROLL_OUT_SPEED = 1.0;
-	static constexpr float ADJUST_SPEED = 0.2;
+	static constexpr float ADJUST_SPEED = 0.3;
 	static constexpr float ROLL_IN_SPEED = -0.5;
 	static constexpr float ROLL_TO_SHOOT_SPEED = -1.0; //speed to intake when feeding ball from storage to shooter
-	static constexpr float ROLL_OUT_TIME = 2.0;//time to roll out completely
+	static constexpr float ROLL_OUT_TIME = 1.0;//time to roll out completely
 
 	static constexpr float SHOOT_SPEED = 1.0;
-	static constexpr double SHOOT_WAIT_TIME = 3.0;//to wait to activate intake motor after activating shooter motor;
-	static constexpr float SHOOT_TIME = 2.0;//time to stop shooting
+	static constexpr float SHOOT_WAIT_TIME = 2.0;//to wait to activate intake motor after activating shooter motor;
+	static constexpr float SHOOT_TIME = 1.5;//time to stop shooting
 
 	State state;
 };

@@ -59,8 +59,8 @@ double Arm::targetPosition(){
 }
 
 bool Arm::isAtTargetPosition(){
-	return abs(armPID->GetError()) < MARGIN_OF_ERROR;
-	//return true;
+	//return abs(armPID->GetError()) < MARGIN_OF_ERROR;
+	return true;
 }
 
 bool Arm::bottomSwitchPressed(){

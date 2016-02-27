@@ -28,7 +28,7 @@ private:
 	static const int TAIL_VICTOR_PWM = 5;
 	static const int TEST_VICTOR = 8;
 
-	static const int INTAKE_PDP_CHANNEL = 11;
+	static const int INTAKE_PDP_CHANNEL = 13;
 	static constexpr float INTAKE_STOP_TIME = 2.0;
 
 	static const int ENCODER_1_DIO = 0;
@@ -82,10 +82,10 @@ private:
 	{
 		autonChooser = new SendableChooser();
 		drive = new RobotDrive(
-			new VictorSP(LEFT_PWM_ONE),
-			new VictorSP(LEFT_PWM_TWO),
-			new VictorSP(RIGHT_PWM_ONE),
-			new VictorSP(RIGHT_PWM_TWO)
+			new Talon(LEFT_PWM_ONE),
+			new Talon(LEFT_PWM_TWO),
+			new Talon(RIGHT_PWM_ONE),
+			new Talon(RIGHT_PWM_TWO)
 		);
 
 		pilot = new GamepadF310(0);
@@ -316,6 +316,8 @@ private:
 			arm->Cheval();
 		}
 
+		SmartDashboard::PutNumber("Intake Current", pdp->GetCurrent(INTAKE_PDP_CHANNEL));
+		SmartDashboard::PutNumber("Shooter Current", pdp->GetCurrent(12));
 		if(pdp->GetCurrent(INTAKE_PDP_CHANNEL) > 10.0){
 			intakeTimer->Start();
 		}
