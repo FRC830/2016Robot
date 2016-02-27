@@ -97,7 +97,7 @@ void Arm::update(){
 		}
 	}
 	if(goingToSwitch){
-		arm->Set(-0.2);
+		arm->Set(-0.3);
 	}
 	if(!goingToSwitch){
 		if(isAtTargetPosition()){

@@ -40,12 +40,13 @@ void Shooter::rollOut(){
 
 void Shooter::shoot() {
 	state = STARTING_SHOOTER;
+	timer->Stop();
 	timer->Reset();
 	timer->Start();
 }
 
 void Shooter::setShootWaitTime(double shootWaitTime){
-	SHOOT_WAIT_TIME = shootWaitTime;
+	//SHOOT_WAIT_TIME = shootWaitTime;
 }
 
 void Shooter::reset(){
@@ -87,7 +88,7 @@ void Shooter::update(){
 		case(STARTING_SHOOTER):
 			shooter->Set(SHOOT_SPEED);
 			arm->goToShooting();
-			if(timer->Get() >= SHOOT_WAIT_TIME && arm->isAtTargetPosition()){
+			if((timer->Get() >= SHOOT_WAIT_TIME) && (arm->isAtTargetPosition())){
 				state = SHOOTING;
 				intake->Set(ROLL_TO_SHOOT_SPEED);
 				timer->Reset();

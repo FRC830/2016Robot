@@ -32,11 +32,13 @@ bool RatTail::atTop(){
 bool RatTail::atBottom(){
 	return position == POS_BOTTOM;
 }
-
+bool RatTail::switchPressed(){
+	return !bottomSwitch->Get();
+}
 void RatTail::update(){
 	switch(state){
 		case BOTTOM:
-			if(!bottomSwitch->Get()){
+			if(!switchPressed()){
 				motor->Set(DOWN_SPEED);
 				position = POS_MOVING;
 			}
@@ -47,7 +49,7 @@ void RatTail::update(){
 			}
 			break;
 		case CHECK_BOTTOM:
-			if(!bottomSwitch->Get()){
+			if(!switchPressed()){
 				motor->Set(DOWN_SPEED);
 				position = POS_MOVING;
 			}
@@ -60,7 +62,7 @@ void RatTail::update(){
 			}
 			break;
 		case TOP:
-			if(!timer->Get() >= UP_TIME){
+			if(timer->Get() <= UP_TIME){
 				motor->Set(UP_SPEED);
 			}
 			else{

@@ -29,7 +29,7 @@ private:
 	static const int TEST_VICTOR = 8;
 
 	static const int INTAKE_PDP_CHANNEL = 11;
-	static constexpr float INTAKE_STOP_TIME = 1.0;
+	static constexpr float INTAKE_STOP_TIME = 2.0;
 
 	static const int ENCODER_1_DIO = 0;
 	static const int ENCODER_2_DIO = 1;
@@ -72,6 +72,7 @@ private:
 	//VictorSP * testVictor;
 
 	SendableChooser * autonChooser;
+	Obstacle autonObstacle;
 
 	void arcadeDrive(float forward, float turn, bool squared = false){
 		drive->ArcadeDrive(-forward, turn, squared);
@@ -115,13 +116,6 @@ private:
 		camerafeeds = new CameraFeeds;
 
 		camerafeeds->init();
-	}
-
-	void AutonomousInit()
-	{
-		timer->Reset();
-		timer->Start();
-		arm->goToSwitch();
 
 		autonChooser = new SendableChooser();
 		autonChooser->AddDefault("Low Bar", new Obstacle(LOW_BAR));
@@ -131,6 +125,16 @@ private:
 		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
 		autonChooser->AddObject("Moat", new Obstacle(MOAT));
 		autonChooser->AddObject("Ramparts", new Obstacle(RAMPARTS));
+
+		SmartDashboard::PutData("Auton Program", autonChooser);
+	}
+
+	void AutonomousInit()
+	{
+		timer->Reset();
+		timer->Start();
+		arm->goToSwitch();
+		autonObstacle = *(Obstacle*)autonChooser->GetSelected();
 	}
 
 	void AutonomousPeriodic()
@@ -139,13 +143,14 @@ private:
 		//1 is the low bar, 5 is against the secret passage
 		int location = 1;
 
-		Obstacle obstacle = LOW_BAR;
-
-		switch(obstacle){
+		switch(autonObstacle){
 			case LOW_BAR:
 				//drive train
 				if(timer->Get() < 4.0){
 					arcadeDrive(0.75, 0.0, false);
+				}
+				else{
+					arcadeDrive(0.0, 0.0);
 				}
 				break;
 			case PORTCULLIS:
@@ -269,6 +274,7 @@ private:
 
 	void TeleopInit()
 	{
+
 		arm->reset();
 		shooter->reset();
 		arm->goToSwitch();
@@ -332,8 +338,9 @@ private:
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
 		SmartDashboard::PutNumber("Arm Encoder: ", arm->encoderValue());
 		SmartDashboard::PutBoolean("Arm Switch: ", arm->bottomSwitchPressed());
+		SmartDashboard::PutBoolean("Rat tail switch", ratTail->switchPressed());
 
-		double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
+		//double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
 
 		/*
 		SmartDashboard::PutNumber("P:",0.1);
@@ -346,10 +353,11 @@ private:
 
 		SmartDashboard::PutNumber("PID Setpoint:", arm->pidSetpoint());
 
-		shooter->setShootWaitTime(shootWaitTime);
+		//shooter->setShootWaitTime(shootWaitTime);
 
 		shooter->update();
 		arm->update();
+		ratTail->update();
 	}
 
 	void TestPeriodic()

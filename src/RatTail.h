@@ -19,6 +19,7 @@ public:
 	bool atTop();
 	bool atBottom();
 	void update();
+	bool switchPressed();
 private:
 	enum State{CHECK_BOTTOM, BOTTOM, TOP, STATIONARY};
 	enum Position{POS_BOTTOM, POS_TOP, POS_MOVING};
@@ -28,9 +29,9 @@ private:
 	State state;
 	Position position;
 
-	static constexpr float UP_SPEED = 0.5;
-	static constexpr float DOWN_SPEED = 0.3;
-	static constexpr float UP_TIME = 1;
+	static constexpr float UP_SPEED = 0.3;
+	static constexpr float DOWN_SPEED = -0.1;
+	static constexpr float UP_TIME = 0.70;
 };
 
 
