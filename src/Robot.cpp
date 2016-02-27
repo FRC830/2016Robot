@@ -39,6 +39,8 @@ private:
 	static const int TAIL_BOTTOM_DIO = 4;
 	//static const int TAIL_TOP_DIO = 5;
 
+	static const int GYRO_ANALOG = 0;
+
 	static const int GEAR_SHIFT_SOL_FORWARD = 0;
 	static const int GEAR_SHIFT_SOL_REVERSE = 1;
 	static const DoubleSolenoid::Value LOW_GEAR = DoubleSolenoid::kForward;
@@ -71,11 +73,13 @@ private:
 	CameraFeeds * camerafeeds;
 	//VictorSP * testVictor;
 
+	AnalogGyro * gyro;
+
 	SendableChooser * autonChooser;
 	Obstacle autonObstacle;
 
 	void arcadeDrive(float forward, float turn, bool squared = false){
-		drive->ArcadeDrive(-forward, turn, squared);
+		drive->ArcadeDrive(forward, -turn, squared);
 	}
 
 	void RobotInit()
@@ -116,6 +120,8 @@ private:
 		camerafeeds = new CameraFeeds;
 
 		camerafeeds->init();
+
+		gyro = new AnalogGyro(GYRO_ANALOG);
 
 		autonChooser = new SendableChooser();
 		autonChooser->AddDefault("Low Bar", new Obstacle(LOW_BAR));
@@ -335,6 +341,8 @@ private:
 			testSpeed = -copilot->LeftTrigger()/3.0;
 		}*/
 		//testVictor->Set(testSpeed);
+
+		SmartDashboard::PutNumber("Gyro Angle", gyro->GetAngle());
 
 		//SmartDashboard::PutNumber("Test Speed", testSpeed);
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
