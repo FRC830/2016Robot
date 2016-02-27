@@ -340,8 +340,6 @@ private:
 		SmartDashboard::PutBoolean("Arm Switch: ", arm->bottomSwitchPressed());
 		SmartDashboard::PutBoolean("Rat tail switch", ratTail->switchPressed());
 
-		//double shootWaitTime = SmartDashboard::GetNumber("Shoot Wait Time:", 0.4);
-
 		/*
 		SmartDashboard::PutNumber("P:",0.1);
 		SmartDashboard::PutNumber("I:",0.1);
@@ -352,8 +350,6 @@ private:
 		arm->setPID(p, i, d);
 
 		SmartDashboard::PutNumber("PID Setpoint:", arm->pidSetpoint());
-
-		//shooter->setShootWaitTime(shootWaitTime);
 
 		shooter->update();
 		arm->update();
