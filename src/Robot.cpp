@@ -298,7 +298,7 @@ private:
 					}
 					break;
 				case 4:
-					if(timer->Get() < 10){
+					if(range->GetRangeInches() > 50){
 						arcadeDrive(1.0, 0.0, false);
 					}
 					break;
@@ -311,21 +311,45 @@ private:
 		}
 		//shooting
 		if(state == 3){
+			timer->Reset();
 			switch(shooterStatus){
 				case NO_SHOOT:
+					//sleeeppppppp
 					break;
 				case SHOOT1:
-					arcadeDrive(0.0, 0.75, false);
-					shooter->shoot();
+					if(timer->Get() < 2){
+						arcadeDrive(0.0, 0.75, false);
+					}
+					else{
+						shooter->shoot();
+					}
 					break;
 				case SHOOT2:
+					if(timer->Get() < 1){
+					arcadeDrive(0.0, 0.5, false);
+					}
+					else{
+						shooter->shoot();
+					}
 					break;
 				case SHOOT3:
 					shooter->shoot();
 					break;
 				case SHOOT4:
+					if(timer->Get() < 1){
+						arcadeDrive(0.0, 0.5, false);
+					}
+					else{
+						shooter->shoot();
+					}
 					break;
 				case SHOOT5:
+					if(timer->Get() < 2){
+					arcadeDrive(0.0, 0.25, false);
+					}
+					else{
+						shooter->shoot();
+					}
 					break;
 			}
 		}
