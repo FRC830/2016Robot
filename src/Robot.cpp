@@ -52,6 +52,9 @@ private:
 
 	const int kCam0Button = 1;
 	const int kCam1Button = 2;
+	const bool kError = false;
+	const bool kOk = true;
+
 
 	PowerDistributionPanel * pdp;
 	Timer * intakeTimer;
@@ -383,11 +386,23 @@ private:
 
 		SmartDashboard::PutNumber("Range in inches", range->GetRangeInches());
 		range->SetAutomaticMode(true);
+
+		if (pilot->ButtonState(F310Buttons::X)){
+			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
+		}
+		if (pilot->ButtonState(F310Buttons::Y)){
+			camerafeeds-> changeCam(camerafeeds->kBtCamBack);
+		}
+		camerafeeds->run();
 	}
 
 	void TestPeriodic()
 	{
 
+	}
+	void DisabledInit()
+	{
+		camerafeeds->end();
 	}
 };
 

@@ -64,13 +64,12 @@ void CameraFeeds::updateCam() {
 }
 
 void CameraFeeds::run() {
-	/*
-	if (contrlr->GetRawButton(CAMERAFEEDS::kBtCamFront)) {
-		changeCam(camFront);
-	}
-	if (contrlr->GetRawButton(CAMERAFEEDS::kBtCamBack)) {
-		changeCam(camBack);
-	}*/
+//	if (contrlr->GetRawButton(CameraFeeds::kBtCamFront)) {
+//		changeCam(camFront);
+//	}
+//	if (contrlr->GetRawButton(CameraFeeds::kBtCamBack)) {
+//		changeCam(camBack);
+//	}
 	updateCam();
 }
 
