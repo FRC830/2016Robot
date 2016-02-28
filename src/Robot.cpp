@@ -40,6 +40,8 @@ private:
 	//static const int TAIL_TOP_DIO = 5;
 
 	static const int GYRO_ANALOG = 0;
+	static const int RANGE_PING_DIO = 6;
+	static const int RANGE_ECHO_DII = 7;
 
 	static const int GEAR_SHIFT_SOL_FORWARD = 0;
 	static const int GEAR_SHIFT_SOL_REVERSE = 1;
@@ -78,13 +80,14 @@ private:
 	SendableChooser * autonChooser;
 	Obstacle autonObstacle;
 
+	Ultrasonic * range;
+
 	void arcadeDrive(float forward, float turn, bool squared = false){
 		drive->ArcadeDrive(forward, -turn, squared);
 	}
 
 	void RobotInit()
 	{
-		autonChooser = new SendableChooser();
 		drive = new RobotDrive(
 			new Talon(LEFT_PWM_ONE),
 			new Talon(LEFT_PWM_TWO),
@@ -103,6 +106,7 @@ private:
 
 		pdp = new PowerDistributionPanel();
 		intakeTimer = new Timer();
+		timer = new Timer();
 		shooter = new Shooter(
 			new DigitalInput(INTAKE_DIO),
 			new VictorSP(INTAKE_VICTOR_PWM),
@@ -123,22 +127,28 @@ private:
 
 		gyro = new AnalogGyro(GYRO_ANALOG);
 
+		range = new Ultrasonic(
+				new DigitalOutput(RANGE_PING_DIO),
+				new DigitalInput(RANGE_ECHO_DII));
+
 		autonChooser = new SendableChooser();
-		autonChooser->AddDefault("Low Bar", new Obstacle(LOW_BAR));
-		autonChooser->AddObject("Do Nothing", new Obstacle(NOTHING));
+		autonChooser->AddDefault("Do Nothing", new Obstacle(NOTHING));
 		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
+		//autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
 		autonChooser->AddObject("Portcullis", new Obstacle(PORTCULLIS));
 		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
 		autonChooser->AddObject("Moat", new Obstacle(MOAT));
 		autonChooser->AddObject("Ramparts", new Obstacle(RAMPARTS));
 
 		SmartDashboard::PutData("Auton Program", autonChooser);
+
 	}
 
 	void AutonomousInit()
 	{
 		timer->Reset();
 		timer->Start();
+		gyro->Reset();
 		arm->goToSwitch();
 		autonObstacle = *(Obstacle*)autonChooser->GetSelected();
 	}
@@ -147,13 +157,17 @@ private:
 	{
 		//where the robot starts on the field in relation to the obstacles
 		//1 is the low bar, 5 is against the secret passage
-		int location = 1;
-
+		//int location = 1;
+		//autonObstacle = LOW_BAR;
+		float turn;
+		turn = gyro->GetAngle()/-15.0;
+		SmartDashboard::PutNumber("Gyro angle", gyro->GetAngle());
+		SmartDashboard::PutNumber("Turn aNgLe", turn);
 		switch(autonObstacle){
 			case LOW_BAR:
 				//drive train
-				if(timer->Get() < 4.0){
-					arcadeDrive(0.75, 0.0, false);
+				if(timer->Get() < 10.0){
+					arcadeDrive(0.25, turn, false);
 				}
 				else{
 					arcadeDrive(0.0, 0.0);
@@ -233,6 +247,7 @@ private:
 				//Do Nothing
 				arcadeDrive(0,0,false);
 		}
+		/*
 		//shooting code
 		switch(location){
 		case 1:
@@ -275,7 +290,8 @@ private:
 				shooter->shoot();
 			}
 			break;
-		}
+		}*/
+
 	}
 
 	void TeleopInit()
@@ -364,6 +380,9 @@ private:
 		shooter->update();
 		arm->update();
 		ratTail->update();
+
+		SmartDashboard::PutNumber("Range in inches", range->GetRangeInches());
+		range->SetAutomaticMode(true);
 	}
 
 	void TestPeriodic()
