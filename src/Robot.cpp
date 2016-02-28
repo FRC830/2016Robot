@@ -14,7 +14,7 @@ class Robot: public IterativeRobot
 {
 public:
 	enum Obstacle{NOTHING, LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
-
+	enum AutonPosition{NO_SHOOT, SHOOT1, SHOOT2, SHOOT3, SHOOT4, SHOOT5};
 private:
 
 	static const int LEFT_PWM_ONE = 0;
@@ -80,6 +80,9 @@ private:
 	SendableChooser * autonChooser;
 	Obstacle autonObstacle;
 
+	SendableChooser * shooterChoice;
+	AutonPosition shooterStatus;
+
 	Ultrasonic * range;
 
 	void arcadeDrive(float forward, float turn, bool squared = false){
@@ -142,6 +145,15 @@ private:
 
 		SmartDashboard::PutData("Auton Program", autonChooser);
 
+		shooterChoice = new SendableChooser();
+		shooterChoice->AddObject("Nothing", new AutonPosition(NO_SHOOT));
+		shooterChoice->AddObject("Position 1", new AutonPosition(SHOOT1));
+		shooterChoice->AddObject("Position 2", new AutonPosition(SHOOT2));
+		shooterChoice->AddObject("Position 3", new AutonPosition(SHOOT3));
+		shooterChoice->AddObject("Position 4", new AutonPosition(SHOOT4));
+		shooterChoice->AddObject("Position 5", new AutonPosition(SHOOT5));
+
+		SmartDashboard::PutData("Auton shooter", shooterChoice);
 	}
 
 	void AutonomousInit()
@@ -151,146 +163,172 @@ private:
 		gyro->Reset();
 		arm->goToSwitch();
 		autonObstacle = *(Obstacle*)autonChooser->GetSelected();
+		shooterStatus = *(AutonPosition*)shooterChoice->GetSelected();
 	}
 
 	void AutonomousPeriodic()
 	{
 		//where the robot starts on the field in relation to the obstacles
 		//1 is the low bar, 5 is against the secret passage
-		//int location = 1;
+		int location = 1;
 		//autonObstacle = LOW_BAR;
 		float turn;
+		int state = 1;
 		turn = gyro->GetAngle()/-15.0;
 		SmartDashboard::PutNumber("Gyro angle", gyro->GetAngle());
-		SmartDashboard::PutNumber("Turn aNgLe", turn);
-		switch(autonObstacle){
-			case LOW_BAR:
-				//drive train
-				if(timer->Get() < 10.0){
-					arcadeDrive(0.25, turn, false);
-				}
-				else{
-					arcadeDrive(0.0, 0.0);
-				}
-				break;
-			case PORTCULLIS:
-				//drive train?
-				if(timer->Get() < 2){
-					arm->goToSwitch();
-					ratTail->goToBottom();
-				}
-				else if(timer->Get() < 4){
-					arcadeDrive(0.75, 0.0, false);
-				}
-				else if(!ratTail->atTop()){
-					ratTail->goToTop();
-					timer->Reset();
-					timer->Start();
-				}
-				else if(timer->Get() < 2){
-					arcadeDrive(0.75, 0.0, false);
-				}
-				else{
-					arcadeDrive(0.0, 0.0, false);
-				}
-				break;
-			case CHEVAL_DE_FRISE:
-				//rat tail?
-				if(timer->Get() < 2){
-					arcadeDrive(1.0, 0.0, false);
-				}
-				else if(!ratTail->atTop()){
-					timer->Reset();
-					timer->Start();
-					ratTail->goToTop();
-					arcadeDrive(0.0, 0.0, false);
-				}
-				else if(timer->Get() < 1){
-					arcadeDrive(0.5, 0.0, false);
-				}
-				else{
-					arcadeDrive(0.0, 0.0, false);
-				}
+		SmartDashboard::PutNumber("Turn angLe", turn);
+		if (state == 1){
+			switch(autonObstacle){
+				case LOW_BAR:
+					//drive train
+					if(timer->Get() < 5.0){
+						arcadeDrive(0.25, turn, false);
+					}
+					else{
+						state = 2;
+					}
+					break;
+				case PORTCULLIS:
+					//drive train?
+					if(timer->Get() < 2){
+						arm->goToSwitch();
+						ratTail->goToBottom();
+					}
+					else if(timer->Get() < 4){
+						arcadeDrive(0.75, 0.0, false);
+					}
+					else if(!ratTail->atTop()){
+						ratTail->goToTop();
+						timer->Reset();
+						timer->Start();
+					}
+					else if(timer->Get() < 2){
+						arcadeDrive(0.75, 0.0, false);
+					}
+					else{
+						state = 2;
+					}
+					break;
+				case CHEVAL_DE_FRISE:
+					//rat tail?
+					if(timer->Get() < 2){
+						arcadeDrive(1.0, 0.0, false);
+					}
+					else if(!ratTail->atTop()){
+						timer->Reset();
+						timer->Start();
+						ratTail->goToTop();
+						arcadeDrive(0.0, 0.0, false);
+					}
+					else if(timer->Get() < 1){
+						arcadeDrive(0.5, 0.0, false);
+					}
+					else{
+						state = 2;
+					}
 
-				break;
-			case MOAT:
-				//drive train
-				if(timer->Get() < 4){
-					arcadeDrive(1.0, 0.0, false);
-				}
-				break;
-			case RAMPARTS:
-				//drive train
-				if(timer->Get() < 4){
-					arcadeDrive(1.0, 0.0, false);
-				}
-				break;
-			case SALLYPORT:
-				//nothing for now...maybe never
-				break;
-			case DRAWBRIDGE:
-				//still nothing-arm?
-				break;
-			case ROCK_WALL:
-				//drive train
-				if(timer->Get() < 4){
-					arcadeDrive(1.0, 0.0, false);
-				}
-				break;
-			case ROUGH_TERRAIN:
-				//drive train
-				if(timer->Get() < 4){
-					arcadeDrive(1.0, 0.0, false);
-				}
-				break;
-			default:
-				//Do Nothing
-				arcadeDrive(0,0,false);
+					break;
+				case MOAT:
+					//drive train
+					if(timer->Get() < 4){
+						arcadeDrive(1.0, 0.0, false);
+					}
+					else{
+						state = 2;
+					}
+					break;
+				case RAMPARTS:
+					//drive train
+					if(timer->Get() < 4){
+						arcadeDrive(1.0, 0.0, false);
+					}
+					else{
+						state = 2;
+					}
+					break;
+				case SALLYPORT:
+					//nothing for now...maybe never
+					break;
+				case DRAWBRIDGE:
+					//still nothing-arm?
+					break;
+				case ROCK_WALL:
+					//drive train
+					if(timer->Get() < 4){
+						arcadeDrive(1.0, 0.0, false);
+					}
+					else{
+						state = 2;
+					}
+					break;
+				case ROUGH_TERRAIN:
+					//drive train
+					if(timer->Get() < 4){
+						arcadeDrive(1.0, 0.0, false);
+					}
+					else{
+						state = 2;
+					}
+					break;
+				default:
+					//Do Nothing
+					arcadeDrive(0,0,false);
 		}
-		/*
-		//shooting code
-		switch(location){
-		case 1:
-			if(timer->Get() < 10){
-				arcadeDrive(1.0, 0.0, false);
+		}
+
+		//lining up to shoot
+		if (state == 2){
+			switch(location){
+				case 1:
+					if(range->GetRangeInches() > 50){
+						arcadeDrive(0.25, 0.0, false);
+					}
+					break;
+				case 2:
+					if(range->GetRangeInches() > 50){
+						arcadeDrive(1.0, 0.0, false);
+					}
+					break;
+				case 3:
+					if(range->GetRangeInches() > 50){
+						arcadeDrive(0.3, turn, false);
+					}
+					else{
+						state = 3;
+					}
+					break;
+				case 4:
+					if(timer->Get() < 10){
+						arcadeDrive(1.0, 0.0, false);
+					}
+					break;
+				case 5:
+					if(range->GetRangeInches() > 50){
+						arcadeDrive(1.0, 0.0, false);
+					}
+					break;
 			}
-			else if(timer->Get() < 15){
-				shooter->shoot();
+		}
+		//shooting
+		if(state == 3){
+			switch(shooterStatus){
+				case NO_SHOOT:
+					break;
+				case SHOOT1:
+					arcadeDrive(0.0, 0.75, false);
+					shooter->shoot();
+					break;
+				case SHOOT2:
+					break;
+				case SHOOT3:
+					shooter->shoot();
+					break;
+				case SHOOT4:
+					break;
+				case SHOOT5:
+					break;
 			}
-			break;
-		case 2:
-			if(timer->Get() < 10){
-				arcadeDrive(1.0, 0.0, false);
-			}
-			else if(timer->Get() < 15){
-				shooter->shoot();
-			}
-			break;
-		case 3:
-			if(timer->Get() < 10){
-				arcadeDrive(1.0, 0.0, false);
-			}
-			else if(timer->Get() < 15){
-				shooter->shoot();
-			}
-			break;
-		case 4:
-			if(timer->Get() < 10){
-				arcadeDrive(1.0, 0.0, false);
-			}
-			else if(timer->Get() < 15){
-				shooter->shoot();
-			}
-			break;
-		case 5:
-			if(timer->Get() < 10){
-				arcadeDrive(1.0, 0.0, false);
-			}
-			else if(timer->Get() < 15){
-				shooter->shoot();
-			}
-			break;
-		}*/
+		}
 
 	}
 
