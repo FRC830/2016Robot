@@ -297,7 +297,15 @@ private:
 		} else {
 			gear_shift->Set(HIGH_GEAR);
 		}
-
+		if (pilot->ButtonState(F310Buttons::X)){
+			arm->Cheval();
+		} else if (pilot->ButtonState(F310Buttons::Y)){
+			arm->goToDown();
+		} else if (pilot->ButtonState(F310Buttons::A)){
+			ratTail->goToTop();
+		} else if (pilot->ButtonState(F310Buttons::B)){
+			ratTail->goToBottom();
+		}
 		if (copilot->ButtonState(F310Buttons::A)) { //gather a ball
 			shooter->rollIn();
 		}else if (copilot->ButtonState(F310Buttons::B)){ //cancel gathering a ball
@@ -312,8 +320,6 @@ private:
 			ratTail->goToBottom();
 		}else if (copilot->ButtonState(F310Buttons::Back)){
 			arm->goToSwitch();
-		}else if (copilot->ButtonState(F310Buttons::Start)){
-			arm->Cheval();
 		}
 
 		if(pdp->GetCurrent(INTAKE_PDP_CHANNEL) > 10.0){
