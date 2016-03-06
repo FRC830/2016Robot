@@ -45,10 +45,6 @@ void Shooter::shoot() {
 	timer->Start();
 }
 
-void Shooter::setShootWaitTime(double shootWaitTime){
-	SHOOT_WAIT_TIME = shootWaitTime;
-}
-
 void Shooter::reset(){
 	state = STATIONARY;
 	timer->Stop();
