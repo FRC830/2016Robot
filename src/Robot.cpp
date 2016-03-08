@@ -28,7 +28,7 @@ private:
 	static const int TAIL_VICTOR_PWM = 5;
 	static const int TEST_VICTOR = 8;
 
-	static const int INTAKE_PDP_CHANNEL = 13;
+	static const int INTAKE_PDP_CHANNEL = 11;
 	static constexpr float INTAKE_STOP_TIME = 2.0;
 
 	static const int ENCODER_1_DIO = 0;
@@ -92,10 +92,10 @@ private:
 	void RobotInit()
 	{
 		drive = new RobotDrive(
-			new Talon(LEFT_PWM_ONE),
-			new Talon(LEFT_PWM_TWO),
-			new Talon(RIGHT_PWM_ONE),
-			new Talon(RIGHT_PWM_TWO)
+			new VictorSP(LEFT_PWM_ONE),
+			new VictorSP(LEFT_PWM_TWO),
+			new VictorSP(RIGHT_PWM_ONE),
+			new VictorSP(RIGHT_PWM_TWO)
 		);
 
 		pilot = new GamepadF310(0);
@@ -171,7 +171,6 @@ private:
 		//where the robot starts on the field in relation to the obstacles
 		//1 is the low bar, 5 is against the secret passage
 		int location = 1;
-		//autonObstacle = LOW_BAR;
 		float turn;
 		int state = 1;
 		turn = gyro->GetAngle()/-15.0;
@@ -365,16 +364,28 @@ private:
 	}
 
 	float previousForward = 0;
-
+	float previousLeft = 0;
+	float previousRight = 0;
 	void TeleopPeriodic(){
-		float targetForward = pilot->LeftY();
-		float turn = pilot->RightX()/1.5;
+		if(1){
+			float targetForward = pilot->LeftY();
+			float turn = pilot->RightX()/1.5;
 
-		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
+			float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 
-		previousForward = forward;
+			previousForward = forward;
 
-		arcadeDrive(forward, turn, true);
+			arcadeDrive(forward, turn, true);
+		} else {
+			float targetLeft = pilot->LeftY();
+			float targetRight = pilot->RightY();
+			float left = accel(previousLeft, targetLeft, TICKS_TO_FULL_SPEED);
+			float right = accel(previousRight, targetRight, TICKS_TO_FULL_SPEED);
+			previousLeft = left;
+			previousRight = right;
+
+			drive->TankDrive(left, right, true);
+		}
 
 		if (pilot->ButtonState(F310Buttons::RightBumper)||pilot->ButtonState(F310Buttons::LeftBumper)){
 			gear_shift->Set(LOW_GEAR);
@@ -407,7 +418,6 @@ private:
 		}
 
 		SmartDashboard::PutNumber("Intake Current", pdp->GetCurrent(INTAKE_PDP_CHANNEL));
-		SmartDashboard::PutNumber("Shooter Current", pdp->GetCurrent(12));
 		if(pdp->GetCurrent(INTAKE_PDP_CHANNEL) > 10.0){
 			intakeTimer->Start();
 		}

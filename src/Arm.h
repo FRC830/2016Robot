@@ -14,7 +14,7 @@
 class Arm {
 public:
 	bool goingToIntake = false;
-	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 200, SHOOTING_POSITION = 2300, CHEVAL_POSITION = 2000};
+	enum Position{DOWN_POSITION = 0, INTAKE_POSITION = 200, CHEVAL_POSITION = 2000, SHOOTING_POSITION = 2300};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
 	void goToDown();
 	void goToIntake();
