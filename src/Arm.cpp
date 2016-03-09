@@ -16,7 +16,7 @@ Arm::Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMoto
 	resetSwitch = encResetSwitch;
 	encoder = armEncoder;
 	arm = armMotor;
-	armPID = new PIDController(0.1, 0.1, 0, armEncoder, armMotor);
+	armPID = new PIDController(0.075, 15, 0.0, armEncoder, armMotor);
 	armPID->SetInputRange(-100,50000);
 	armPID->SetOutputRange(-0.15, 0.35);
 	armPID->SetAbsoluteTolerance(500);
@@ -59,8 +59,8 @@ double Arm::targetPosition(){
 }
 
 bool Arm::isAtTargetPosition(){
-	//return abs(armPID->GetError()) < MARGIN_OF_ERROR;
-	return true;
+	return abs(armPID->GetError()) < MARGIN_OF_ERROR;
+	//return true;
 }
 
 bool Arm::bottomSwitchPressed(){

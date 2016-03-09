@@ -39,7 +39,7 @@ private:
 	static constexpr float ROLL_TO_SHOOT_SPEED = -1.0; //speed to intake when feeding ball from storage to shooter
 	static constexpr float ROLL_OUT_TIME = 1.0;//time to roll out completely
 
-	static constexpr float SHOOT_SPEED = 0.5;
+	static constexpr float SHOOT_SPEED = 1.0;
 	static constexpr float SHOOT_WAIT_TIME = 2.0;//to wait to activate intake motor after activating shooter motor;
 	static constexpr float SHOOT_TIME = 1.5;//time to stop shooting
 

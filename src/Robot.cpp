@@ -448,10 +448,10 @@ private:
 		SmartDashboard::PutNumber("P:",0.1);
 		SmartDashboard::PutNumber("I:",0.1);
 		SmartDashboard::PutNumber("D:",0.1); */
-		double p = SmartDashboard::GetNumber("P:", 0.075);
+		/*double p = SmartDashboard::GetNumber("P:", 0.075);
 		double i = SmartDashboard::GetNumber("I:", 15);
 		double d = SmartDashboard::GetNumber("D:", 0.0);
-		arm->setPID(p, i, d);
+		arm->setPID(p, i, d);*/
 
 		SmartDashboard::PutNumber("PID Setpoint:", arm->pidSetpoint());
 
