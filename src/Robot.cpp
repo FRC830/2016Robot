@@ -48,7 +48,7 @@ private:
 	static const DoubleSolenoid::Value LOW_GEAR = DoubleSolenoid::kForward;
 	static const DoubleSolenoid::Value HIGH_GEAR = DoubleSolenoid::kReverse;
 
-	static const int TICKS_TO_FULL_SPEED = 40;
+	static const int TICKS_TO_FULL_SPEED = 15;
 
 	const int kCam0Button = 1;
 	const int kCam1Button = 2;
@@ -448,10 +448,10 @@ private:
 		SmartDashboard::PutNumber("P:",0.1);
 		SmartDashboard::PutNumber("I:",0.1);
 		SmartDashboard::PutNumber("D:",0.1); */
-		double p = SmartDashboard::GetNumber("P:", 0.075);
+		/*double p = SmartDashboard::GetNumber("P:", 0.075);
 		double i = SmartDashboard::GetNumber("I:", 15);
 		double d = SmartDashboard::GetNumber("D:", 0.0);
-		arm->setPID(p, i, d);
+		arm->setPID(p, i, d);*/
 
 		SmartDashboard::PutNumber("PID Setpoint:", arm->pidSetpoint());
 
@@ -461,6 +461,15 @@ private:
 
 		SmartDashboard::PutNumber("Range in inches", range->GetRangeInches());
 		range->SetAutomaticMode(true);
+
+		if (pilot->ButtonState(F310Buttons::DPadUp)) {
+			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
+		}
+		if (pilot->ButtonState(F310Buttons::DPadDown)){
+			camerafeeds-> changeCam(camerafeeds->kBtCamBack);
+		}
+
+		camerafeeds->run();
 	}
 
 	void TestPeriodic()

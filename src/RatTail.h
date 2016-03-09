@@ -29,8 +29,8 @@ private:
 	State state;
 	Position position;
 
-	static constexpr float UP_SPEED = 0.3;
-	static constexpr float DOWN_SPEED = -0.1;
+	static constexpr float UP_SPEED = 0.4;
+	static constexpr float DOWN_SPEED = -0.2;
 	static constexpr float UP_TIME = 0.70;
 };
 
