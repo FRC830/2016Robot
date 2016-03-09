@@ -462,10 +462,10 @@ private:
 		SmartDashboard::PutNumber("Range in inches", range->GetRangeInches());
 		range->SetAutomaticMode(true);
 
-		if (pilot->ButtonState(F310Buttons::X)) {
+		if (pilot->ButtonState(F310Buttons::DPadUp)) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
 		}
-		if (pilot->ButtonState(F310Buttons::Y)){
+		if (pilot->ButtonState(F310Buttons::DPadDown)){
 			camerafeeds-> changeCam(camerafeeds->kBtCamBack);
 		}
 
