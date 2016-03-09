@@ -6,6 +6,7 @@
  */
 
 #include "WPILib.h"
+#include "../wpiutils/LCameraServer.h"
 
 #ifndef SRC_CAMERAFEEDS_H_
 #define SRC_CAMERAFEEDS_H_
@@ -30,7 +31,7 @@ private:
 	IMAQdxSession camBack;
 	IMAQdxSession curCam;
 	Image *frame;
-	CameraServer *server;
+	LCameraServer *server;
 	const char *camNameFront = "cam0";
 	const char *camNameBack = "cam1";
 	int imgQuality = 60;

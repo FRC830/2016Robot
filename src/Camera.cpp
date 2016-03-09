@@ -21,7 +21,7 @@ CameraFeeds::CameraFeeds(){
 
 	curCam = camFront;
 	frame = imaqCreateImage(IMAQ_IMAGE_RGB, 0);
-	server = CameraServer::GetInstance();
+	server = LCameraServer::GetInstance();
 	server->SetQuality(imgQuality);
 	//contrlr = newJoy;
 }
