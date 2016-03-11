@@ -19,14 +19,16 @@ public:
 	void goToDown();
 	void goToIntake();
 	void goToShooting();
+	void goToSwitch();
+	void goToCheval();
+
 	double targetPosition();
 	bool isAtTargetPosition();
 	double encoderValue();
 	void setPID(double p, double i, double d);
 	double pidSetpoint();
+
 	bool bottomSwitchPressed();//used to be private
-	void goToSwitch();
-	void Cheval();
 
 	void reset();
 	void update();
