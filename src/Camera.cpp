@@ -61,9 +61,23 @@ void CameraFeeds::updateCam() {
 	}
 	int dimx, dimy;
 	imaqGetImageSize(frame, &dimx, &dimy);
-	static const float color = 0x0000ff;
+	static const float color = 0x00ff00;
+	static const float color2 = 0x0000ff;
 	imaqDrawLineOnImage(frame, frame, IMAQ_DRAW_VALUE, {dimx/2, 0}, {dimx/2, dimy}, color);
 	imaqDrawLineOnImage(frame, frame, IMAQ_DRAW_VALUE, {0, dimy/2}, {dimx, dimy/2}, color);
+	imaqDrawLineOnImage(frame, frame, IMAQ_DRAW_VALUE, {dimx/2 + 2, 0}, {dimx/2 + 2, dimy}, color2);
+	imaqDrawLineOnImage(frame, frame, IMAQ_DRAW_VALUE, {0, dimy/2 + 2}, {dimx, dimy/2 + 2}, color2);
+	imaqDrawLineOnImage(frame, frame, IMAQ_DRAW_VALUE, {dimx/2 - 2, 0}, {dimx/2 - 2, dimy}, color2);
+	imaqDrawLineOnImage(frame, frame, IMAQ_DRAW_VALUE, {0, dimy/2 - 2}, {dimx, dimy/2 - 2}, color2);
+//	DrawTextOptions opts = {
+//			"Arial",
+//			12,
+//			0,0,0,0,
+//			IMAQ_LEFT,
+//			FontColor(0x0000ff)
+//	};
+//	int font_used;
+//	imaqDrawTextOnImage(frame, frame, {0,0}, curCam == camFront ? "front" : "back", &opts, &font_used);
 	server->SetImage(frame);
 
 }
