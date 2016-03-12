@@ -8,9 +8,10 @@
 #include <Shooter.h>
 #include <WPILib.h>
 #include "../wpiutils/830utilities.h"
+#include "Arm.h"
 
 Shooter::Shooter(DigitalInput * intakeSwitch, VictorSP * intakeMotor, VictorSP * shooterMotor, Arm * robotArm)
-:shoot_close(false)
+:shoot_close(false),shoot_pos(0)
 {
 	lineBreak = intakeSwitch;
 	intake = intakeMotor;
@@ -42,6 +43,16 @@ void Shooter::rollOut(){
 void Shooter::shoot(bool close) {
 	state = STARTING_SHOOTER;
 	shoot_close = close;
+	shoot_pos=0;
+	timer->Stop();
+	timer->Reset();
+	timer->Start();
+}
+
+void Shooter::shoot(int pos) {
+	state = STARTING_SHOOTER;
+	shoot_close =false;
+	shoot_pos = pos;
 	timer->Stop();
 	timer->Reset();
 	timer->Start();
@@ -88,6 +99,8 @@ void Shooter::update(){
 			shooter->Set(SHOOT_SPEED);
 			if (shoot_close)
 				arm->goToCloseShooting();
+			else if (shoot_pos)
+				arm->goToRaw(shoot_pos);
 			else
 				arm->goToShooting();
 			if((timer->Get() >= SHOOT_WAIT_TIME) && (arm->isAtTargetPosition())){

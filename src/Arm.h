@@ -18,10 +18,11 @@ public:
 		DOWN_POSITION = 0,
 		INTAKE_POSITION = 200,
 		CLOSE_SHOOTING_POSITION = 1850,
-		CHEVAL_POSITION = 2000,
+		CHEVAL_POSITION = 1000,
 		SHOOTING_POSITION = 2300,
 	};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
+	void goToRaw(int pos);
 	void goToDown();
 	void goToIntake();
 	void goToShooting();
@@ -47,7 +48,7 @@ private:
 	PIDController * armPID;
 	bool goingToSwitch = false;
 
-	static const int MARGIN_OF_ERROR = 50;
+	static const int MARGIN_OF_ERROR = 40;
 	//static const int ARM_UP_SPEED = 1.0;
 	//static const int ARM_DOWN_SPEED = -0.5;
 };

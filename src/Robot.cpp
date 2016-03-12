@@ -295,6 +295,7 @@ private:
 		arm->reset();
 		shooter->reset();
 		arm->goToSwitch();
+		SmartDashboard::PutNumber("custom shoot", SmartDashboard::GetNumber("custom shoot", Arm::CLOSE_SHOOTING_POSITION));
 	}
 
 	float previousForward = 0;
@@ -315,6 +316,11 @@ private:
 			turn = pilot->RightX()/1.5;
 		}
 		SmartDashboard::PutNumber("turn",turn);
+		if (pilot->RightY() > 0.99) {
+			turn = 0;
+			targetForward = 0.3;
+		}
+
 		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 
 		previousForward = forward;
@@ -349,6 +355,8 @@ private:
 			shooter->shoot();
 		}else if (copilot->ButtonState(F310Buttons::Start)){// close shooting
 			shooter->shoot(true);
+		}else if (copilot->RightTrigger() > 0.9) {//custom shooting
+			shooter->shoot((int)SmartDashboard::GetNumber("custom shoot", Arm::CLOSE_SHOOTING_POSITION));
 		}else if (copilot->DPadY() == 1){
 			ratTail->goToTop();
 		}else if (copilot->DPadY() == -1){//for moving down after cheval

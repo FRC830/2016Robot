@@ -21,6 +21,7 @@ public:
 	void rollIn();
 	void rollOut();
 	void shoot(bool close = false);
+	void shoot(int pos);
 	bool hasBall();
 
 	void reset();
@@ -45,6 +46,7 @@ private:
 
 	State state;
 	bool shoot_close;
+	int shoot_pos;
 };
 
 #endif /* SRC_SHOOTER_H_ */
