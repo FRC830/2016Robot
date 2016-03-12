@@ -314,7 +314,7 @@ private:
 			gyro_comp_active = false;
 			turn = pilot->RightX()/1.5;
 		}
-
+		SmartDashboard::PutNumber("turn",turn);
 		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 
 		previousForward = forward;
