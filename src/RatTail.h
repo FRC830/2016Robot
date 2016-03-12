@@ -30,8 +30,9 @@ private:
 	Position position;
 
 	static constexpr float UP_SPEED = 0.4;
-	static constexpr float DOWN_SPEED = -0.2;
-	static constexpr float UP_TIME = 0.70;
+	static constexpr float DOWN_SPEED = -0.3;
+	static constexpr float UP_TIME = 1.2;
+	static constexpr float DOWN_TIME = UP_TIME * -(UP_SPEED / DOWN_SPEED);
 };
 
 
