@@ -334,6 +334,7 @@ private:
 		} else {
 			gear_shift->Set(HIGH_GEAR);
 		}
+		SmartDashboard::PutString("gear", gear_shift->Get() == LOW_GEAR ? "low" : "high");
 		if (pilot->ButtonState(F310Buttons::X)){
 			arm->goToCheval();
 		} else if (pilot->ButtonState(F310Buttons::Y)){
