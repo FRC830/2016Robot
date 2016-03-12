@@ -138,6 +138,7 @@ private:
 
 		autonChooser = new SendableChooser();
 		autonChooser->AddDefault("Do Nothing", new Obstacle(NOTHING));
+		autonChooser->AddObject("Touch obstacle", new Obstacle(TOUCH));
 		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
 		//autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
 		autonChooser->AddObject("Portcullis", new Obstacle(PORTCULLIS));
