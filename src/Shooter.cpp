@@ -73,6 +73,7 @@ void Shooter::update(){
 			if(arm->isAtTargetPosition()){
 				timer->Start();
 				intake->Set(ROLL_OUT_SPEED);
+				shooter->Set(-(SHOOT_SPEED / 2));
 				if(timer->Get() >= ROLL_OUT_TIME){
 					intake->Set(0.0);
 					state = STATIONARY;
