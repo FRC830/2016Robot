@@ -59,6 +59,11 @@ void CameraFeeds::updateCam() {
 	if(imaqError != IMAQdxErrorSuccess) {
 		DriverStation::ReportError("IMAQdxGrab error: " + std::to_string(imaqError) + "\n");
 	}
+	int dimx, dimy;
+	imaqGetImageSize(frame, &dimx, &dimy);
+	static const float color = 0x0000ff;
+	imaqDrawLineOnImage(frame, frame, IMAQ_DRAW_VALUE, {dimx/2, 0}, {dimx/2, dimy}, color);
+	imaqDrawLineOnImage(frame, frame, IMAQ_DRAW_VALUE, {0, dimy/2}, {dimx, dimy/2}, color);
 	server->SetImage(frame);
 
 }
