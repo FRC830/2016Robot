@@ -184,7 +184,7 @@ private:
 				}
 				else { // LOW_BAR
 					speed = 0.5;
-					time = 4;
+					time = 3;
 					arm->goToSwitch();
 				}
 				//drive train
