@@ -88,7 +88,7 @@ private:
 	Ultrasonic * range;
 
 	void arcadeDrive(float forward, float turn, bool squared = false){
-		drive->ArcadeDrive(forward, -turn, squared);
+		drive->ArcadeDrive(-forward, turn, squared);
 	}
 
 	void RobotInit()
