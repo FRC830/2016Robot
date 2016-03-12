@@ -44,6 +44,12 @@ void Arm::goToShooting(){
 	armPID->SetSetpoint(SHOOTING_POSITION);
 }
 
+void Arm::goToCloseShooting() {
+	armPID->Enable();
+	goingToSwitch = false;
+	armPID->SetSetpoint(CLOSE_SHOOTING_POSITION);
+}
+
 void Arm::goToSwitch(){
 	armPID->SetSetpoint(DOWN_POSITION);
 	armPID->Disable();

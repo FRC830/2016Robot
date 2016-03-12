@@ -20,7 +20,7 @@ public:
 	void stop();//not for normal stopping
 	void rollIn();
 	void rollOut();
-	void shoot();
+	void shoot(bool close = false);
 	bool hasBall();
 
 	void reset();
@@ -44,6 +44,7 @@ private:
 	static constexpr float SHOOT_TIME = 1.5;//time to stop shooting
 
 	State state;
+	bool shoot_close;
 };
 
 #endif /* SRC_SHOOTER_H_ */

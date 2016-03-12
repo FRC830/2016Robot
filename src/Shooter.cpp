@@ -38,8 +38,9 @@ void Shooter::rollOut(){
 	timer->Reset();
 }
 
-void Shooter::shoot() {
+void Shooter::shoot(bool close) {
 	state = STARTING_SHOOTER;
+	shoot_close = close;
 	timer->Stop();
 	timer->Reset();
 	timer->Start();
@@ -84,7 +85,10 @@ void Shooter::update(){
 			break;
 		case(STARTING_SHOOTER):
 			shooter->Set(SHOOT_SPEED);
-			arm->goToShooting();
+			if (shoot_close)
+				arm->goToCloseShooting();
+			else
+				arm->goToShooting();
 			if((timer->Get() >= SHOOT_WAIT_TIME) && (arm->isAtTargetPosition())){
 				state = SHOOTING;
 				intake->Set(ROLL_TO_SHOOT_SPEED);

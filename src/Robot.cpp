@@ -353,6 +353,9 @@ private:
 			shooter->rollOut();
 		}else if (copilot->ButtonState(F310Buttons::Y)){ //shoot a ball
 			shooter->shoot();
+		}else if (copilot->ButtonState(F310Buttons::Start)){
+			// close shooting
+			shooter->shoot(true);
 		}else if (copilot->DPadY() == 1){
 			ratTail->goToTop();
 		}else if (copilot->DPadY() == -1){//for moving down after cheval
