@@ -76,6 +76,8 @@ private:
 	//VictorSP * testVictor;
 
 	AnalogGyro * gyro;
+	// gyro angle compensation
+	bool gyro_comp_active;
 
 	SendableChooser * autonChooser;
 	Obstacle autonObstacle;
@@ -307,7 +309,19 @@ private:
 	void TeleopPeriodic(){
 		//Drive Train
 		float targetForward = pilot->LeftY();
-		float turn = pilot->RightX()/1.5;
+		float turn;
+		if (pilot->ButtonState(F310Buttons::LeftStick)) {
+			// compensate with gyro!
+			if (!gyro_comp_active) {
+				gyro->Reset();
+				gyro_comp_active = true;
+			}
+			turn = -gyro->GetAngle() * 0.1;
+		}
+		else {
+			gyro_comp_active = false;
+			turn = pilot->RightX()/1.5;
+		}
 
 		float forward = accel(previousForward, targetForward, TICKS_TO_FULL_SPEED);
 
