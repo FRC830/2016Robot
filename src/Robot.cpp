@@ -275,7 +275,8 @@ private:
 				//Do Nothing
 				arcadeDrive(0,0,false);
 		}
-
+		ratTail->update();
+		arm->update();
 	}
 
 	void TeleopInit()
