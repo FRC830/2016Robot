@@ -16,7 +16,7 @@ public:
 	enum Obstacle{NOTHING, TOUCH, LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
 	enum AutonPosition{NO_SHOOT, SHOOT1, SHOOT2, SHOOT3, SHOOT4, SHOOT5};
 private:
-
+	//PWM
 	static const int LEFT_PWM_ONE = 0;
 	static const int LEFT_PWM_TWO = 4;
 	static const int RIGHT_PWM_ONE = 1;
@@ -28,64 +28,61 @@ private:
 	static const int TAIL_VICTOR_PWM = 5;
 	static const int TEST_VICTOR = 8;
 
-	static const int INTAKE_PDP_CHANNEL = 11;
-	static constexpr float INTAKE_STOP_TIME = 2.0;
+	//Analog Input
+	static const int GYRO_ANALOG = 0;
 
+	//Digital IO
 	static const int ENCODER_1_DIO = 0;
 	static const int ENCODER_2_DIO = 1;
 	static const int INTAKE_DIO = 2;
-
 	static const int ARM_RESET_DIO = 3;
 	static const int TAIL_BOTTOM_DIO = 4;
-	//static const int TAIL_TOP_DIO = 5;
-
-	static const int GYRO_ANALOG = 0;
 	static const int RANGE_PING_DIO = 6;
 	static const int RANGE_ECHO_DII = 7;
 
+	//Pneumatics Control Module output channels
 	static const int GEAR_SHIFT_SOL_FORWARD = 0;
 	static const int GEAR_SHIFT_SOL_REVERSE = 1;
 	static const DoubleSolenoid::Value LOW_GEAR = DoubleSolenoid::kForward;
 	static const DoubleSolenoid::Value HIGH_GEAR = DoubleSolenoid::kReverse;
 
+	//For handling intake motor burnout protection
+	static const int INTAKE_PDP_CHANNEL = 11;
+	static constexpr float INTAKE_STOP_TIME = 2.0;
+	Timer * intakeTimer;
+
 	static const int TICKS_TO_FULL_SPEED = 15;
 
 	const int kCam0Button = 1;
 	const int kCam1Button = 2;
+	CameraFeeds * camerafeeds;
 
-	PowerDistributionPanel * pdp;
-	Timer * intakeTimer;
+	GamepadF310 * pilot;
+	GamepadF310 * copilot;
 
 	RobotDrive * drive;
-
-	Timer * timer;
-
-	DoubleSolenoid * gear_shift;
-
 	VictorSP * frontLeft;
 	VictorSP * backLeft;
 	VictorSP * frontRight;
 	VictorSP * backRight;
+	DoubleSolenoid * gear_shift;
 
-	GamepadF310 * pilot;
-	GamepadF310 * copilot;
 	Shooter * shooter;
 	Arm * arm;
 	RatTail * ratTail;
-	CameraFeeds * camerafeeds;
-	//VictorSP * testVictor;
+
+	Timer * timer;
+	SendableChooser * autonChooser;
+	Obstacle autonObstacle;
+	SendableChooser * shooterChoice;
+	AutonPosition shooterStatus;
 
 	AnalogGyro * gyro;
 	// gyro angle compensation
 	bool gyro_comp_active;
-
-	SendableChooser * autonChooser;
-	Obstacle autonObstacle;
-
-	SendableChooser * shooterChoice;
-	AutonPosition shooterStatus;
-
 	Ultrasonic * range;
+
+	PowerDistributionPanel * pdp;
 
 	void arcadeDrive(float forward, float turn, bool squared = false){
 		drive->ArcadeDrive(-forward, turn, squared);
@@ -124,10 +121,8 @@ private:
 		);
 		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
 		SmartDashboard::init();
-		//testVictor = new VictorSP(TEST_VICTOR);
 
 		camerafeeds = new CameraFeeds;
-
 		camerafeeds->init();
 
 		gyro = new AnalogGyro(GYRO_ANALOG);
@@ -140,7 +135,6 @@ private:
 		autonChooser->AddDefault("Do Nothing", new Obstacle(NOTHING));
 		autonChooser->AddObject("Touch obstacle", new Obstacle(TOUCH));
 		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
-		//autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
 		autonChooser->AddObject("Portcullis", new Obstacle(PORTCULLIS));
 		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
 		autonChooser->AddObject("Moat", new Obstacle(MOAT));
@@ -298,15 +292,12 @@ private:
 
 	void TeleopInit()
 	{
-
 		arm->reset();
 		shooter->reset();
 		arm->goToSwitch();
 	}
 
 	float previousForward = 0;
-	float previousLeft = 0;
-	float previousRight = 0;
 	void TeleopPeriodic(){
 		//Drive Train
 		float targetForward = pilot->LeftY();
@@ -330,6 +321,7 @@ private:
 
 		arcadeDrive(forward, turn, true);
 
+		//Pilot controls
 		if (pilot->ButtonState(F310Buttons::RightBumper)||pilot->ButtonState(F310Buttons::LeftBumper)){
 			gear_shift->Set(LOW_GEAR);
 		} else {
@@ -345,6 +337,8 @@ private:
 		} else if (pilot->ButtonState(F310Buttons::B)){
 			ratTail->goToBottom();
 		}
+
+		//Copilot Controls
 		if (copilot->ButtonState(F310Buttons::A)) { //gather a ball
 			shooter->rollIn();
 		}else if (copilot->ButtonState(F310Buttons::B)){ //cancel gathering a ball
@@ -353,8 +347,7 @@ private:
 			shooter->rollOut();
 		}else if (copilot->ButtonState(F310Buttons::Y)){ //shoot a ball
 			shooter->shoot();
-		}else if (copilot->ButtonState(F310Buttons::Start)){
-			// close shooting
+		}else if (copilot->ButtonState(F310Buttons::Start)){// close shooting
 			shooter->shoot(true);
 		}else if (copilot->DPadY() == 1){
 			ratTail->goToTop();
@@ -364,28 +357,20 @@ private:
 			arm->goToSwitch();
 		}
 
+		//Autoomatically stop the intake motor if it pulls too much current for too long
+		//prevents melting and fires and such
 		SmartDashboard::PutNumber("Intake Current", pdp->GetCurrent(INTAKE_PDP_CHANNEL));
 		if(pdp->GetCurrent(INTAKE_PDP_CHANNEL) > 10.0){
 			intakeTimer->Start();
-		}
-		else{
+		} else {
 			intakeTimer->Reset();
 			intakeTimer->Stop();
 		}
 		if(intakeTimer->Get() > INTAKE_STOP_TIME){
 			shooter->stop();
 		}
-		/*float testSpeed = 0;
-		if (copilot->RightTrigger()> 0.05){
-			testSpeed = copilot->RightTrigger()/3.0;
-		}else if (copilot->LeftTrigger() > 0.05){
-			testSpeed = -copilot->LeftTrigger()/3.0;
-		}*/
-		//testVictor->Set(testSpeed);
 
 		SmartDashboard::PutNumber("Gyro Angle", gyro->GetAngle());
-
-		//SmartDashboard::PutNumber("Test Speed", testSpeed);
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
 		SmartDashboard::PutNumber("Arm Encoder: ", arm->encoderValue());
 		SmartDashboard::PutBoolean("Arm Switch: ", arm->bottomSwitchPressed());
@@ -406,8 +391,8 @@ private:
 		arm->update();
 		ratTail->update();
 
-		SmartDashboard::PutNumber("Range in inches", range->GetRangeInches());
-		range->SetAutomaticMode(true);
+		//SmartDashboard::PutNumber("Range in inches", range->GetRangeInches());
+		//range->SetAutomaticMode(true);
 
 		CameraPeriodic();
 	}

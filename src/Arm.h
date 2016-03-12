@@ -14,13 +14,12 @@
 class Arm {
 public:
 	bool goingToIntake = false;
-	//1272
 	enum Position{
 		DOWN_POSITION = 0,
 		INTAKE_POSITION = 200,
+		CLOSE_SHOOTING_POSITION = 1272,
 		CHEVAL_POSITION = 2000,
 		SHOOTING_POSITION = 2300,
-		CLOSE_SHOOTING_POSITION = 1272
 	};
 	Arm(DigitalInput * encResetSwitch, Encoder * armEncoder, VictorSP * armMotor);
 	void goToDown();
