@@ -13,7 +13,7 @@
 class Robot: public IterativeRobot
 {
 public:
-	enum Obstacle{NOTHING, LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
+	enum Obstacle{NOTHING, TOUCH, LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
 	enum AutonPosition{NO_SHOOT, SHOOT1, SHOOT2, SHOOT3, SHOOT4, SHOOT5};
 private:
 
@@ -177,15 +177,29 @@ private:
 		SmartDashboard::PutNumber("Turn angle", turn);
 
 		switch(autonObstacle){
+			case TOUCH:
 			case LOW_BAR:
+			{
+				float speed, time;
+				if (autonObstacle == TOUCH) {
+					speed = 0.25;
+					time = 5;
+				}
+				else { // LOW_BAR
+					speed = 0.5;
+					time = 4;
+					arm->goToSwitch();
+				}
 				//drive train
-				if(timer->Get() < 5.0){
-					arcadeDrive(0.25, turn, false);
+				if(timer->Get() < time){
+					ratTail->goToBottom();
+					arcadeDrive(speed, turn, false);
 				}
 				else{
 					arcadeDrive(0.0,0.0);
 				}
 				break;
+			}
 			case PORTCULLIS:
 				//drive train?
 				if(timer->Get() < 2){
