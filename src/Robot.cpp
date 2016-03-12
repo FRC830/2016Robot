@@ -163,8 +163,6 @@ private:
 		gyro->Reset();
 		arm->goToSwitch();
 		gear_shift->Set(LOW_GEAR);
-		autonObstacle = *(Obstacle*)autonChooser->GetSelected();
-		shooterStatus = *(AutonPosition*)shooterChoice->GetSelected();
 	}
 
 	void AutonomousPeriodic()
@@ -377,6 +375,22 @@ private:
 		SmartDashboard::PutNumber("Range in inches", range->GetRangeInches());
 		range->SetAutomaticMode(true);
 
+		CameraPeriodic();
+	}
+
+	void TestPeriodic()
+	{
+
+	}
+
+	void DisabledPeriodic() {
+		autonObstacle = autonChooser->GetSelected() ? *(Obstacle*)autonChooser->GetSelected() : NOTHING;
+		shooterStatus = shooterChoice->GetSelected() ? *(AutonPosition*)shooterChoice->GetSelected() : NO_SHOOT;
+		SmartDashboard::PutNumber("auton obstacle ID", autonObstacle);
+		CameraPeriodic();
+	}
+
+	void CameraPeriodic() {
 		if (pilot->ButtonState(F310Buttons::DPadUp)) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
 		}
@@ -387,10 +401,6 @@ private:
 		camerafeeds->run();
 	}
 
-	void TestPeriodic()
-	{
-
-	}
 };
 
 START_ROBOT_CLASS(Robot)
