@@ -284,7 +284,7 @@ private:
 					arcadeDrive(0.8, 0.0, false);
 				}
 				else{
-					state = 2;
+					arcadeDrive(0.0, 0.0);
 				}
 				break;
 			default:
