@@ -171,6 +171,8 @@ private:
 		//int state = 1;
 		turn = gyro->GetAngle()/-15.0;
 		WARN_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
+
+
 		SmartDashboard::PutNumber("Gyro angle", gyro->GetAngle());
 		SmartDashboard::PutNumber("Turn angle", turn);
 		switch(autonObstacle){
@@ -241,7 +243,7 @@ private:
 			case MOAT:
 				//drive train
 				if(timer->Get() < 2){
-					arcadeDrive(0.8, 0.0, false);
+					arcadeDrive(0.8, turn, false);
 				}
 				else{
 					arcadeDrive(0.0,0.0);
@@ -250,7 +252,7 @@ private:
 			case RAMPARTS:
 				//drive train
 				if(timer->Get() < 2){
-					arcadeDrive(0.8, 0.0, false);
+					arcadeDrive(0.8, turn, false);
 				}
 				else{
 					arcadeDrive(0.0,0.0);
@@ -267,7 +269,7 @@ private:
 			case ROCK_WALL:
 				//drive train
 				if(timer->Get() < 2){
-					arcadeDrive(0.8, 0.0, false);
+					arcadeDrive(0.8, turn, false);
 				}
 				else{
 					arcadeDrive(0.0,0.0);
@@ -276,7 +278,7 @@ private:
 			case ROUGH_TERRAIN:
 				//drive train
 				if(timer->Get() < 2){
-					arcadeDrive(0.8, 0.0, false);
+					arcadeDrive(0.8, turn, false);
 				}
 				else{
 					arcadeDrive(0.0, 0.0);
@@ -303,7 +305,7 @@ private:
 		//Drive Train
 		float targetForward = pilot->LeftY();
 		float turn;
-		if (pilot->ButtonState(F310Buttons::LeftStick)) {
+		if (pilot->RightY() > 0.8) {
 			// compensate with gyro!
 			if (!gyro_comp_active) {
 				gyro->Reset();
@@ -316,7 +318,7 @@ private:
 			turn = pilot->RightX()/1.5;
 		}
 		SmartDashboard::PutNumber("turn",turn);
-		if (pilot->RightY() > 0.99) {
+		if (pilot->RightTrigger() > 0.99) {
 			turn = 0;
 			targetForward = 0.3;
 		}
