@@ -170,7 +170,7 @@ private:
 		float turn;
 		//int state = 1;
 		turn = gyro->GetAngle()/-15.0;
-		WARN_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
+		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
 		SmartDashboard::PutNumber("Gyro angle", gyro->GetAngle());
 		SmartDashboard::PutNumber("Turn angle", turn);
 		switch(autonObstacle){
