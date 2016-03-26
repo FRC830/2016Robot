@@ -47,6 +47,10 @@ bool RatTail::topSwitchPressed(){
 void RatTail::update(){
 	switch(state){
 		case TO_BOTTOM:
+			if (atBottom()) {
+				state = STATIONARY;
+				break;
+			}
 			if(!bottomSwitchPressed() && timer->Get() < DOWN_TIME){
 				motor->Set(DOWN_SPEED);
 				position = POS_MOVING;
@@ -58,6 +62,10 @@ void RatTail::update(){
 			}
 			break;
 		case TO_TOP:
+			if(atTop()) {
+				state = STATIONARY;
+				break;
+			}
 			if(!topSwitchPressed() && timer->Get() < UP_TIME){
 				motor->Set(UP_SPEED);
 				position = POS_MOVING;
