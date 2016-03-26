@@ -13,18 +13,20 @@
 
 class RatTail {
 public:
-	RatTail(DigitalInput * bottom, VictorSP * tailMotor);
+	RatTail(DigitalInput * bottom, DigitalInput * top, VictorSP * tailMotor);
 	void goToTop();
 	void goToBottom();
 	bool atTop();
 	bool atBottom();
 	void update();
-	bool switchPressed();
+	bool topSwitchPressed();
+	bool bottomSwitchPressed();
 private:
-	enum State{CHECK_BOTTOM, BOTTOM, TOP, STATIONARY};
+	enum State{TO_BOTTOM, TO_TOP, STATIONARY};
 	enum Position{POS_BOTTOM, POS_TOP, POS_MOVING};
 	VictorSP * motor;
 	DigitalInput * bottomSwitch;
+	DigitalInput * topSwitch;
 	Timer * timer;
 	State state;
 	Position position;

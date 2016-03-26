@@ -9,26 +9,23 @@
 #include <WPILib.h>
 #include "../wpiutils/830utilities.h"
 
-RatTail::RatTail(DigitalInput * bottom, VictorSP * tailMotor){
+RatTail::RatTail(DigitalInput * bottom, DigitalInput * top, VictorSP * tailMotor){
 	motor = tailMotor;
 	bottomSwitch = bottom;
+	topSwitch = top;
 	timer = new Timer();
 	state = STATIONARY;
 	position = POS_TOP;
 }
 
 void RatTail::goToBottom(){
-	state = BOTTOM;
+	state = TO_BOTTOM;
 	timer->Reset();
 	timer->Start();
 }
 
 void RatTail::goToTop(){
-	// CHECK_BOTTOM moves to the bottom, then the top
-	// don't do this unnecessarily
-	if (position == POS_TOP)
-		return;
-	state = CHECK_BOTTOM;
+	state = TO_TOP;
 	// used to enforce maximum time
 	timer->Reset();
 	timer->Start();
@@ -41,13 +38,16 @@ bool RatTail::atTop(){
 bool RatTail::atBottom(){
 	return position == POS_BOTTOM;
 }
-bool RatTail::switchPressed(){
+bool RatTail::bottomSwitchPressed(){
 	return !bottomSwitch->Get();
+}
+bool RatTail::topSwitchPressed(){
+	return !topSwitch->Get();
 }
 void RatTail::update(){
 	switch(state){
-		case BOTTOM:
-			if(!switchPressed() && timer->Get() < DOWN_TIME){
+		case TO_BOTTOM:
+			if(!bottomSwitchPressed() && timer->Get() < DOWN_TIME){
 				motor->Set(DOWN_SPEED);
 				position = POS_MOVING;
 			}
@@ -57,30 +57,14 @@ void RatTail::update(){
 				position = POS_BOTTOM;
 			}
 			break;
-		case CHECK_BOTTOM:
-			// moving to the bottom, then to the top
-			if(!switchPressed() && timer->Get() < DOWN_TIME){
-				motor->Set(DOWN_SPEED);
+		case TO_TOP:
+			if(!topSwitchPressed() && timer->Get() < UP_TIME){
+				motor->Set(UP_SPEED);
 				position = POS_MOVING;
 			}
 			else{
 				motor->Set(0);
-				// start moving up again
-				state = TOP;
-				timer->Stop();
-				timer->Reset();
-				timer->Start();
-			}
-			break;
-		case TOP:
-			if(timer->Get() <= UP_TIME){
-				motor->Set(UP_SPEED);
-			}
-			else{
-				motor->Set(0);
 				position = POS_TOP;
-				timer->Stop();
-				timer->Reset();
 				state = STATIONARY;
 			}
 			break;

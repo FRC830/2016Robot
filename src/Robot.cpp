@@ -37,6 +37,7 @@ private:
 	static const int INTAKE_DIO = 2;
 	static const int ARM_RESET_DIO = 3;
 	static const int TAIL_BOTTOM_DIO = 4;
+	static const int TAIL_TOP_DIO = 5;
 	static const int RANGE_PING_DIO = 6;
 	static const int RANGE_ECHO_DII = 7;
 
@@ -117,6 +118,7 @@ private:
 		);
 		ratTail = new RatTail(
 			new DigitalInput(TAIL_BOTTOM_DIO),
+			new DigitalInput(TAIL_TOP_DIO),
 			new VictorSP(TAIL_VICTOR_PWM)
 		);
 		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
@@ -304,7 +306,7 @@ private:
 		//Drive Train
 		float targetForward = pilot->LeftY();
 		float turn;
-		if (pilot->RightY() > 0.8) {
+		if (pilot->RightY() > 0.9) {
 			// compensate with gyro!
 			if (!gyro_comp_active) {
 				gyro->Reset();
@@ -335,14 +337,16 @@ private:
 			gear_shift->Set(HIGH_GEAR);
 		}
 		SmartDashboard::PutString("gear", gear_shift->Get() == LOW_GEAR ? "low" : "high");
+
 		if (pilot->ButtonState(F310Buttons::X)){
-			arm->goToCheval();
-		} else if (pilot->ButtonState(F310Buttons::Y)){
 			arm->goToDown();
-		} else if (pilot->ButtonState(F310Buttons::A)){
-			ratTail->goToTop();
-		} else if (pilot->ButtonState(F310Buttons::B)){
+		} else if (pilot->ButtonState(F310Buttons::Y)){
+			arm->goToCheval();
+		}
+		if (pilot->ButtonState(F310Buttons::B)){
 			ratTail->goToBottom();
+		} else {
+			ratTail->goToTop();
 		}
 
 		//Copilot Controls
@@ -383,7 +387,8 @@ private:
 		SmartDashboard::PutBoolean("Has Ball", shooter->hasBall());
 		SmartDashboard::PutNumber("Arm Encoder: ", arm->encoderValue());
 		SmartDashboard::PutBoolean("Arm Switch: ", arm->bottomSwitchPressed());
-		SmartDashboard::PutBoolean("Rat tail switch", ratTail->switchPressed());
+		SmartDashboard::PutBoolean("Rat tail bottom switch", ratTail->bottomSwitchPressed());
+		SmartDashboard::PutBoolean("Rat tail top switch", ratTail->topSwitchPressed());
 
 		/*
 		SmartDashboard::PutNumber("P:",0.1);
