@@ -155,6 +155,24 @@ private:
 		SmartDashboard::PutData("Auton shooter", shooterChoice);
 	}
 
+	void AutonArcadeDrive(float speed, float time) {
+		static bool stopped = false;
+		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 12, "excessive gyro drift: " << gyro->GetAngle());
+		if (time >= timer->Get() || abs(gyro->GetAngle()) >= 20)
+			stopped = true;
+		WARN_COND_ON(stopped, "stopped: angle=" << gyro->GetAngle() <<
+			" time=" << timer->Get() << "/" << time);
+
+		if (stopped) {
+			arcadeDrive(0, 0);
+		}
+		else {
+			float turn = gyro->GetAngle() / -15.0;
+			arcadeDrive(speed, turn);
+		}
+
+	}
+
 	void AutonomousInit()
 	{
 		timer->Reset();
@@ -169,125 +187,68 @@ private:
 		//where the robot starts on the field in relation to the obstacles
 		//1 is the low bar, 5 is against the secret passage
 		//int location = 1;
-		float turn;
-		//int state = 1;
-		turn = gyro->GetAngle()/-15.0;
+		// float turn;
+		// //int state = 1;
+		// turn = gyro->GetAngle()/-15.0;
 
+		float time = timer->Get();
+		float turn = gyro->GetAngle() / -15.0;
 		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
-		SmartDashboard::PutNumber("Gyro angle", gyro->GetAngle());
-		SmartDashboard::PutNumber("Turn angle", turn);
 		switch(autonObstacle){
 			case TOUCH:
+				AutonArcadeDrive(0.25, 5);
+				arm->goToCheval();
+				break;
 			case LOW_BAR:
-			{
-				float speed, time;
-				if (autonObstacle == TOUCH) {
-					speed = 0.25;
-					time = 5;
-				}
-				else { // LOW_BAR
-					speed = 0.5;
-					time = 3;
-					arm->goToSwitch();
-				}
-				//drive train
-				if(timer->Get() < time){
-					ratTail->goToBottom();
-					arcadeDrive(speed, turn, false);
-				}
-				else{
-					arcadeDrive(0.0,0.0);
-				}
-				break;
-			}
 			case PORTCULLIS:
-				//drive train?
-				if(timer->Get() < 2){
-					arm->goToSwitch();
+				if (autonObstacle == LOW_BAR)
+					AutonArcadeDrive(0.5, 3);
+				else
+					AutonArcadeDrive(0.4, 3);
+				arm->goToSwitch();
+				if (time < 3)
 					ratTail->goToBottom();
-				}
-				else if(timer->Get() < 4){
-					arcadeDrive(0.75, turn, false);
-				}
-				else if(!ratTail->atTop()){
+				else if (time > 10)
 					ratTail->goToTop();
-				}
-				else if(timer->Get() < 12){
-					arcadeDrive(0.75, turn, false);
-				}
-				else{
-					arcadeDrive(0.0,0.0);
-				}
 				break;
+
 			case CHEVAL_DE_FRISE:
 				//rat tail?
 				if(timer->Get() < 2){
 					arm->goToCheval();
-					arcadeDrive(0.5, turn, false);
+					arcadeDrive(0.5, turn);
 				}
 				else if(timer->Get() < 4){
 					arcadeDrive(0.0,0.0);
 					arm->goToDown();
 				}
 				else if(timer->Get() < 5){
-					arcadeDrive(0.25, turn, false);
+					arcadeDrive(0.25, turn);
 					arm->goToCheval();
 				}
 				else if(timer->Get() < 8){
-					arcadeDrive(0.75, turn, false);
+					arcadeDrive(0.75, turn);
 				}
 				else{
 					arcadeDrive(0.0,0.0);
 				}
 
 				break;
+
 			case MOAT:
-				//drive train
-				if(timer->Get() < 2){
-					arcadeDrive(0.8, turn, false);
-				}
-				else{
-					arcadeDrive(0.0,0.0);
-				}
-				break;
 			case RAMPARTS:
-				//drive train
-				if(timer->Get() < 2){
-					arcadeDrive(0.8, turn, false);
-				}
-				else{
-					arcadeDrive(0.0,0.0);
-				}
-				break;
-			case SALLYPORT:
-				//nothing for now...maybe never
-				arcadeDrive(0.0,0.0);
-				break;
-			case DRAWBRIDGE:
-				//still nothing-arm?
-				arcadeDrive(0.0,0.0);
-				break;
 			case ROCK_WALL:
-				//drive train
-				if(timer->Get() < 2){
-					arcadeDrive(0.8, turn, false);
-				}
-				else{
-					arcadeDrive(0.0,0.0);
-				}
-				break;
 			case ROUGH_TERRAIN:
 				//drive train
-				if(timer->Get() < 2){
-					arcadeDrive(0.8, turn, false);
-				}
-				else{
-					arcadeDrive(0.0, 0.0);
-				}
+				AutonArcadeDrive(0.8, 2);
 				break;
+
+			case SALLYPORT:
+			case DRAWBRIDGE:
 			default:
 				//Do Nothing
-				arcadeDrive(0,0,false);
+				arcadeDrive(0,0);
+				break;
 		}
 		ratTail->update();
 		arm->update();
