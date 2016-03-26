@@ -57,7 +57,7 @@ void Arm::goToCloseShooting() {
 }
 
 void Arm::goToSwitch(){
-	armPID->SetSetpoint(CLOSE_SHOOTING_POSITION);
+	armPID->SetSetpoint(DOWN_POSITION);
 	armPID->Disable();
 	goingToSwitch = true;
 }
@@ -100,7 +100,7 @@ void Arm::update(){
 	if(bottomSwitchPressed()){
 		encoder->Reset();
 		if(goingToIntake){
-			armPID->SetSetpoint(CLOSE_SHOOTING_POSITION);
+			armPID->SetSetpoint(INTAKE_POSITION);
 			goingToIntake = false;
 		}
 		if(goingToSwitch){
@@ -109,7 +109,7 @@ void Arm::update(){
 		}
 	}
 	if(goingToSwitch){
-		arm->Set(0.4);
+		arm->Set(-0.4);
 	}
 	if(!goingToSwitch){
 		if(isAtTargetPosition()){

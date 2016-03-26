@@ -28,6 +28,7 @@ private:
 	static const int TAIL_VICTOR_PWM = 5;
 	static const int TEST_VICTOR = 8;
 
+
 	//Analog Input
 	static const int GYRO_ANALOG = 0;
 
@@ -323,14 +324,15 @@ private:
 			shooter->shoot(true);
 		}else if (copilot->RightTrigger() > 0.9) {//custom shooting
 			shooter->shoot((int)SmartDashboard::GetNumber("custom shoot", Arm::CLOSE_SHOOTING_POSITION));
-		}else if (copilot->DPadY() == 1){
-			ratTail->goToTop();
-		}else if (copilot->DPadY() == -1){//for moving down after cheval
-			ratTail->goToBottom();
 		}else if (copilot->ButtonState(F310Buttons::Back)){
 			arm->goToSwitch();
 		}
 
+		if (copilot->DPadY() == -1){//for moving down after cheval
+			ratTail->goToBottom();
+		} else {
+			ratTail->goToTop();
+		}
 		//Autoomatically stop the intake motor if it pulls too much current for too long
 		//prevents melting and fires and such
 		SmartDashboard::PutNumber("Intake Current", pdp->GetCurrent(INTAKE_PDP_CHANNEL));
@@ -385,6 +387,7 @@ private:
 	}
 
 	void CameraPeriodic() {
+		return;
 		if (pilot->ButtonState(F310Buttons::DPadUp)) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
 		}
