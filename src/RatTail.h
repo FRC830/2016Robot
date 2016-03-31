@@ -13,7 +13,7 @@
 
 class RatTail {
 public:
-	RatTail(DigitalInput * bottom, DigitalInput * top, VictorSP * tailMotor);
+	RatTail(DigitalInput * bottom, PowerDistributionPanel * powerPanel, VictorSP * tailMotor);
 	void goToTop();
 	void goToBottom();
 	bool atTop();
@@ -26,8 +26,9 @@ private:
 	enum Position{POS_BOTTOM, POS_TOP, POS_MOVING};
 	VictorSP * motor;
 	DigitalInput * bottomSwitch;
-	DigitalInput * topSwitch;
+	Timer * currentTimer;
 	Timer * timer;
+	PowerDistributionPanel * pdp;
 	State state;
 	Position position;
 
@@ -35,6 +36,10 @@ private:
 	static constexpr float DOWN_SPEED = -0.3;
 	static constexpr float UP_TIME = 1.2;
 	static constexpr float DOWN_TIME = UP_TIME * -(UP_SPEED / DOWN_SPEED);
+
+	static const int MOTOR_PDP_CHANNEL = 10;
+	static constexpr float MAX_CURRENT = 5; //amps
+	static constexpr float MAX_CURRENT_TIME = 0.5; //seconds
 };
 
 

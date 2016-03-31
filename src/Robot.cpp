@@ -119,7 +119,7 @@ private:
 		);
 		ratTail = new RatTail(
 			new DigitalInput(TAIL_BOTTOM_DIO),
-			new DigitalInput(TAIL_TOP_DIO),
+			pdp,
 			new VictorSP(TAIL_VICTOR_PWM)
 		);
 		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
@@ -351,7 +351,6 @@ private:
 		SmartDashboard::PutNumber("Arm Encoder: ", arm->encoderValue());
 		SmartDashboard::PutBoolean("Arm Switch: ", arm->bottomSwitchPressed());
 		SmartDashboard::PutBoolean("Rat tail bottom switch", ratTail->bottomSwitchPressed());
-		SmartDashboard::PutBoolean("Rat tail top switch", ratTail->topSwitchPressed());
 
 		/*
 		SmartDashboard::PutNumber("P:",0.1);

@@ -9,10 +9,11 @@
 #include <WPILib.h>
 #include "../wpiutils/830utilities.h"
 
-RatTail::RatTail(DigitalInput * bottom, DigitalInput * top, VictorSP * tailMotor){
+RatTail::RatTail(DigitalInput * bottom, PowerDistributionPanel * powerPanel, VictorSP * tailMotor){
 	motor = tailMotor;
 	bottomSwitch = bottom;
-	topSwitch = top;
+	pdp = powerPanel;
+	currentTimer = new Timer();
 	timer = new Timer();
 	state = STATIONARY;
 	position = POS_TOP;
@@ -41,10 +42,14 @@ bool RatTail::atBottom(){
 bool RatTail::bottomSwitchPressed(){
 	return !bottomSwitch->Get();
 }
-bool RatTail::topSwitchPressed(){
-	return !topSwitch->Get();
-}
 void RatTail::update(){
+	if(pdp->GetCurrent(MOTOR_PDP_CHANNEL) > MAX_CURRENT){
+		currentTimer->Start();
+	}
+	else {
+		currentTimer->Stop();
+		currentTimer->Reset();
+	}
 	switch(state){
 		case TO_BOTTOM:
 			if (atBottom()) {
@@ -66,7 +71,7 @@ void RatTail::update(){
 				state = STATIONARY;
 				break;
 			}
-			if(!topSwitchPressed() && timer->Get() < UP_TIME){
+			if(currentTimer->Get() < MAX_CURRENT_TIME && timer->Get() < UP_TIME){
 				motor->Set(UP_SPEED);
 				position = POS_MOVING;
 			}
