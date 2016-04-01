@@ -374,6 +374,10 @@ private:
 
 	}
 
+	void DisabledInit() {
+
+	}
+
 	void DisabledPeriodic() {
 		autonObstacle = autonChooser->GetSelected() ? *(Obstacle*)autonChooser->GetSelected() : NOTHING;
 		shooterStatus = shooterChoice->GetSelected() ? *(AutonPosition*)shooterChoice->GetSelected() : NO_SHOOT;
