@@ -382,7 +382,6 @@ private:
 	}
 
 	void CameraPeriodic() {
-		return;
 		if (pilot->ButtonState(F310Buttons::DPadUp)) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
 		}
