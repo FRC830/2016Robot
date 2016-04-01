@@ -293,7 +293,7 @@ private:
 		arcadeDrive(forward, turn, true);
 
 		//Pilot controls
-		if (pilot->ButtonState(F310Buttons::RightBumper)||pilot->ButtonState(F310Buttons::LeftBumper)){
+		if (pilot->LeftTrigger() > 0.5){
 			gear_shift->Set(LOW_GEAR);
 		} else {
 			gear_shift->Set(HIGH_GEAR);
