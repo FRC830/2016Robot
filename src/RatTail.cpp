@@ -20,16 +20,20 @@ RatTail::RatTail(DigitalInput * bottom, PowerDistributionPanel * powerPanel, Vic
 }
 
 void RatTail::goToBottom(){
-	state = TO_BOTTOM;
-	timer->Reset();
-	timer->Start();
+	if(state != TO_BOTTOM){
+		state = TO_BOTTOM;
+		timer->Reset();
+		timer->Start();
+	}
 }
 
 void RatTail::goToTop(){
-	state = TO_TOP;
-	// used to enforce maximum time
-	timer->Reset();
-	timer->Start();
+	if(state != TO_TOP){
+		state = TO_TOP;
+		// used to enforce maximum time
+		timer->Reset();
+		timer->Start();
+	}
 }
 
 bool RatTail::atTop(){
@@ -43,7 +47,7 @@ bool RatTail::bottomSwitchPressed(){
 	return !bottomSwitch->Get();
 }
 void RatTail::update(){
-	if(pdp->GetCurrent(MOTOR_PDP_CHANNEL) > MAX_CURRENT){
+	if(state != STATIONARY && pdp->GetCurrent(MOTOR_PDP_CHANNEL) > MAX_CURRENT){
 		currentTimer->Start();
 	}
 	else {

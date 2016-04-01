@@ -33,9 +33,9 @@ private:
 	Position position;
 
 	static constexpr float UP_SPEED = 0.3;
-	static constexpr float DOWN_SPEED = -0.4;
-	static constexpr float UP_TIME = 1.2;
-	static constexpr float DOWN_TIME = UP_TIME * -(UP_SPEED / DOWN_SPEED);
+	static constexpr float DOWN_SPEED = -0.45;
+	static constexpr float UP_TIME = 2;
+	static constexpr float DOWN_TIME = 1;
 
 	static const int MOTOR_PDP_CHANNEL = 2;
 	static constexpr float MAX_CURRENT = 2; //amps
