@@ -13,7 +13,7 @@
 class Robot: public IterativeRobot
 {
 public:
-	enum Obstacle{NOTHING, TOUCH, LOW_BAR, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
+	enum Obstacle{NOTHING, TOUCH, LOW_BAR, LOW_BAR_2X, PORTCULLIS, CHEVAL_DE_FRISE, MOAT, RAMPARTS, DRAWBRIDGE, SALLYPORT, ROCK_WALL, ROUGH_TERRAIN};
 	enum AutonPosition{NO_SHOOT, SHOOT1, SHOOT2, SHOOT3, SHOOT4, SHOOT5};
 private:
 	//PWM
@@ -138,6 +138,7 @@ private:
 		autonChooser->AddDefault("Do Nothing", new Obstacle(NOTHING));
 		autonChooser->AddObject("Touch obstacle", new Obstacle(TOUCH));
 		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
+		autonChooser->AddObject("Low Bar 2x", new Obstacle(LOW_BAR_2X));
 		autonChooser->AddObject("Portcullis", new Obstacle(PORTCULLIS));
 		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
 		autonChooser->AddObject("Moat", new Obstacle(MOAT));
@@ -202,6 +203,7 @@ private:
 				AutonArcadeDrive(0.25, 5);
 				arm->goToCheval();
 				break;
+
 			case LOW_BAR:
 			case PORTCULLIS:
 				// delay for 1 second to allow rat tail to go down
@@ -211,6 +213,19 @@ private:
 					ratTail->goToBottom();
 				else if (time > 10)
 					ratTail->goToTop();
+				break;
+
+			case LOW_BAR_2X:
+				if (1 < time && time < 4)
+					AutonArcadeDrive(0.45, 15);
+				else if (4.5 < time && time < 7)
+					AutonArcadeDrive(-0.45, 15);
+
+				if (time < 3)
+					ratTail->goToBottom();
+				else if (time > 10)
+					ratTail->goToTop();
+
 				break;
 
 			case CHEVAL_DE_FRISE:
