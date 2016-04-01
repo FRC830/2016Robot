@@ -207,11 +207,14 @@ private:
 			case LOW_BAR:
 			case PORTCULLIS:
 				// delay for 1 second to allow rat tail to go down
-				AutonArcadeDrive(0.45, 4, 1);
+				if (autonObstacle == LOW_BAR)
+					AutonArcadeDrive(0.45, 4, 1);
+				else
+					AutonArcadeDrive(0.25, 9, 1);
 				arm->goToSwitch();
 				if (time < 3)
 					ratTail->goToBottom();
-				else if (time > 10)
+				else if (time > 13)
 					ratTail->goToTop();
 				break;
 
@@ -221,11 +224,10 @@ private:
 				else if (4.5 < time && time < 7)
 					AutonArcadeDrive(-0.45, 15);
 
-				if (time < 3)
-					ratTail->goToBottom();
-				else if (time > 10)
+				if (time > 12)
 					ratTail->goToTop();
-
+				else
+					ratTail->goToBottom();
 				break;
 
 			case CHEVAL_DE_FRISE:
@@ -293,7 +295,7 @@ private:
 		}
 		else {
 			gyro_comp_active = false;
-			turn = pilot->RightX()/1.5;
+			turn = pilot->RightX()/1.4;
 		}
 		SmartDashboard::PutNumber("turn",turn);
 		if (pilot->RightTrigger() > 0.99) {
