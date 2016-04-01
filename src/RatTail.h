@@ -32,14 +32,14 @@ private:
 	State state;
 	Position position;
 
-	static constexpr float UP_SPEED = 0.4;
-	static constexpr float DOWN_SPEED = -0.3;
+	static constexpr float UP_SPEED = 0.3;
+	static constexpr float DOWN_SPEED = -0.4;
 	static constexpr float UP_TIME = 1.2;
 	static constexpr float DOWN_TIME = UP_TIME * -(UP_SPEED / DOWN_SPEED);
 
-	static const int MOTOR_PDP_CHANNEL = 10;
-	static constexpr float MAX_CURRENT = 5; //amps
-	static constexpr float MAX_CURRENT_TIME = 0.5; //seconds
+	static const int MOTOR_PDP_CHANNEL = 2;
+	static constexpr float MAX_CURRENT = 2; //amps
+	static constexpr float MAX_CURRENT_TIME = 0.2; //seconds
 };
 
 

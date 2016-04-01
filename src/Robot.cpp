@@ -159,7 +159,7 @@ private:
 	void AutonArcadeDrive(float speed, float time) {
 		static bool stopped = false;
 		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 12, "excessive gyro drift: " << gyro->GetAngle());
-		if (time >= timer->Get() || abs(gyro->GetAngle()) >= 20)
+		if (timer->Get() >= time || abs(gyro->GetAngle()) >= 20)
 			stopped = true;
 		WARN_COND_ON(stopped, "stopped: angle=" << gyro->GetAngle() <<
 			" time=" << timer->Get() << "/" << time);
@@ -305,11 +305,6 @@ private:
 		} else if (pilot->ButtonState(F310Buttons::Y)){
 			arm->goToCheval();
 		}
-		if (pilot->ButtonState(F310Buttons::B)){
-			ratTail->goToBottom();
-		} else {
-			ratTail->goToTop();
-		}
 
 		//Copilot Controls
 		if (copilot->ButtonState(F310Buttons::A)) { //gather a ball
@@ -328,7 +323,7 @@ private:
 			arm->goToSwitch();
 		}
 
-		if (copilot->DPadY() == -1){//for moving down after cheval
+		if (copilot->DPadY() == -1 || pilot->ButtonState(F310Buttons::B)){//for moving down after cheval
 			ratTail->goToBottom();
 		} else {
 			ratTail->goToTop();
@@ -352,6 +347,7 @@ private:
 		SmartDashboard::PutBoolean("Arm Switch: ", arm->bottomSwitchPressed());
 		SmartDashboard::PutBoolean("Rat tail bottom switch", ratTail->bottomSwitchPressed());
 
+		SmartDashboard::PutNumber("Rat Tail Current",pdp->GetCurrent(2));
 		/*
 		SmartDashboard::PutNumber("P:",0.1);
 		SmartDashboard::PutNumber("I:",0.1);
