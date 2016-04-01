@@ -375,7 +375,7 @@ private:
 	}
 
 	void DisabledInit() {
-
+		gyro->Reset();
 	}
 
 	void DisabledPeriodic() {
