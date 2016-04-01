@@ -156,15 +156,16 @@ private:
 		SmartDashboard::PutData("Auton shooter", shooterChoice);
 	}
 
-	void AutonArcadeDrive(float speed, float time) {
-		static bool stopped = false;
+	bool auton_stopped;
+	void AutonArcadeDrive(float speed, float max_time, float delay_time = 0) {
 		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 12, "excessive gyro drift: " << gyro->GetAngle());
-		if (timer->Get() >= time || abs(gyro->GetAngle()) >= 20)
-			stopped = true;
-		WARN_COND_ON(stopped, "stopped: angle=" << gyro->GetAngle() <<
-			" time=" << timer->Get() << "/" << time);
+		float time = timer->Get();
+		if (time >= max_time || abs(gyro->GetAngle()) >= 20)
+			auton_stopped = true;
+		WARN_COND_ON(auton_stopped, "stopped: angle=" << gyro->GetAngle() <<
+			" time=" << time << "/" << max_time);
 
-		if (stopped) {
+		if (auton_stopped || time < delay_time) {
 			arcadeDrive(0, 0);
 		}
 		else {
@@ -176,6 +177,7 @@ private:
 
 	void AutonomousInit()
 	{
+		auton_stopped = false;
 		timer->Reset();
 		timer->Start();
 		gyro->Reset();
@@ -202,10 +204,8 @@ private:
 				break;
 			case LOW_BAR:
 			case PORTCULLIS:
-				if (autonObstacle == LOW_BAR)
-					AutonArcadeDrive(0.5, 3);
-				else
-					AutonArcadeDrive(0.4, 3);
+				// delay for 1 second to allow rat tail to go down
+				AutonArcadeDrive(0.45, 4, 1);
 				arm->goToSwitch();
 				if (time < 3)
 					ratTail->goToBottom();
