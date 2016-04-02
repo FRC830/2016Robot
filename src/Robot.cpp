@@ -198,6 +198,7 @@ private:
 		float time = timer->Get();
 		float turn = gyro->GetAngle() / -15.0;
 		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
+		bool hold_arm = false;
 		switch(autonObstacle){
 			case TOUCH:
 				AutonArcadeDrive(0.25, 5);
@@ -211,7 +212,10 @@ private:
 					AutonArcadeDrive(0.45, 4, 1);
 				else
 					AutonArcadeDrive(0.25, 9, 1);
-				arm->goToSwitch();
+
+				if (time < 1)
+					hold_arm = true;
+
 				if (time < 3)
 					ratTail->goToBottom();
 				else if (time > 13)
@@ -223,6 +227,9 @@ private:
 					AutonArcadeDrive(0.45, 15);
 				else if (4.5 < time && time < 7)
 					AutonArcadeDrive(-0.45, 15);
+
+				if (time < 1)
+					hold_arm = true;
 
 				if (time > 12)
 					ratTail->goToTop();
@@ -269,7 +276,8 @@ private:
 				break;
 		}
 		ratTail->update();
-		arm->update();
+		if (!hold_arm)
+			arm->update();
 	}
 
 	void TeleopInit()
