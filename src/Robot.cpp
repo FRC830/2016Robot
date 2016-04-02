@@ -140,9 +140,11 @@ private:
 		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
 		autonChooser->AddObject("Low Bar 2x", new Obstacle(LOW_BAR_2X));
 		autonChooser->AddObject("Portcullis", new Obstacle(PORTCULLIS));
-		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
+//		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
 		autonChooser->AddObject("Moat", new Obstacle(MOAT));
 		autonChooser->AddObject("Ramparts", new Obstacle(RAMPARTS));
+		autonChooser->AddObject("Rock Wall", new Obstacle(ROCK_WALL));
+		autonChooser->AddObject("Rough Terrain", new Obstacle(ROUGH_TERRAIN));
 
 		SmartDashboard::PutData("Auton Program", autonChooser);
 
