@@ -180,6 +180,8 @@ private:
 
 	void AutonomousInit()
 	{
+		puts("starting auton");
+		printf("obstacle: %i\n", autonObstacle);
 		auton_stopped = false;
 		timer->Reset();
 		timer->Start();
@@ -284,6 +286,7 @@ private:
 
 	void TeleopInit()
 	{
+		puts("teleop init");
 		arm->reset();
 		shooter->reset();
 		arm->goToSwitch();
@@ -402,6 +405,7 @@ private:
 	}
 
 	void DisabledInit() {
+		puts("disabled");
 		gyro->Reset();
 	}
 
