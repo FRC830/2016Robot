@@ -225,8 +225,8 @@ private:
 			case LOW_BAR_2X:
 				if (1 < time && time < 4)
 					AutonArcadeDrive(0.45, 15);
-				else if (4.5 < time && time < 7)
-					AutonArcadeDrive(-0.45, 15);
+				else if (4.5 < time && time < 7.5)
+					AutonArcadeDrive(-0.35, 15);
 
 				if (time < 1)
 					hold_arm = true;
