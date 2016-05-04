@@ -8,9 +8,10 @@
 #ifndef SRC_SHOOTER_H_
 #define SRC_SHOOTER_H_
 
-#include "arm.h"
 #include <WPILib.h>
-#include "../wpiutils/830utilities.h"
+#include <Lib830.h>
+
+#include "Arm.h"
 
 class Shooter {
 

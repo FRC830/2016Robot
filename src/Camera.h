@@ -6,7 +6,7 @@
  */
 
 #include "WPILib.h"
-#include "../wpiutils/LCameraServer.h"
+#include "lib/LCameraServer.h"
 
 #ifndef SRC_CAMERAFEEDS_H_
 #define SRC_CAMERAFEEDS_H_

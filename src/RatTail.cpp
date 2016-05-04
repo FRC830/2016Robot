@@ -5,9 +5,9 @@
  *      Author: ratpack
  */
 
-#include <RatTail.h>
+#include "RatTail.h"
 #include <WPILib.h>
-#include "../wpiutils/830utilities.h"
+#include <Lib830.h>
 
 RatTail::RatTail(DigitalInput * bottom, PowerDistributionPanel * powerPanel, VictorSP * tailMotor){
 	motor = tailMotor;

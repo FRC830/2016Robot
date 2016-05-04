@@ -9,7 +9,7 @@
 #define SRC_ARM_H_
 
 #include <WPILib.h>
-#include "../wpiutils/830utilities.h"
+#include <Lib830.h>
 
 class Arm {
 public:

@@ -1,5 +1,5 @@
 #include "WPILib.h"
-#include "../wpiutils/830utilities.h"
+#include "Lib830.h"
 
 #include "Timer.h"
 
@@ -9,6 +9,8 @@
 #include "Shooter.h"
 #include "RatTail.h"
 #include "Camera.h"
+
+using namespace Lib830;
 
 class Robot: public IterativeRobot
 {
