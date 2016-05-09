@@ -6,7 +6,6 @@
  */
 
 #include <WPILib.h>
-#include <Lib830.h>
 
 #include "Shooter.h"
 #include "Arm.h"

@@ -7,7 +7,6 @@
 
 #include "RatTail.h"
 #include <WPILib.h>
-#include <Lib830.h>
 
 RatTail::RatTail(DigitalInput * bottom, PowerDistributionPanel * powerPanel, VictorSP * tailMotor){
 	motor = tailMotor;

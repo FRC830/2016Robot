@@ -9,7 +9,6 @@
 #define SRC_SHOOTER_H_
 
 #include <WPILib.h>
-#include <Lib830.h>
 
 #include "Arm.h"
 

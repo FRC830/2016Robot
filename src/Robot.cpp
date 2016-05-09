@@ -319,30 +319,30 @@ private:
 		}
 		SmartDashboard::PutString("gear", gear_shift->Get() == LOW_GEAR ? "low" : "high");
 
-		if (pilot->ButtonState(F310Buttons::X)){
+		if (pilot->ButtonState(GamepadF310::BUTTON_X)){
 			arm->goToDown();
-		} else if (pilot->ButtonState(F310Buttons::Y)){
+		} else if (pilot->ButtonState(GamepadF310::BUTTON_Y)){
 			arm->goToCheval();
 		}
 
 		//Copilot Controls
-		if (copilot->ButtonState(F310Buttons::A)) { //gather a ball
+		if (copilot->ButtonState(GamepadF310::BUTTON_A)) { //gather a ball
 			shooter->rollIn();
-		}else if (copilot->ButtonState(F310Buttons::B)){ //cancel gathering a ball
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_B)){ //cancel gathering a ball
 			shooter->stop();
-		}else if (copilot->ButtonState(F310Buttons::X)){ //eject a ball
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_X)){ //eject a ball
 			shooter->rollOut();
-		}else if (copilot->ButtonState(F310Buttons::Y)){ //shoot a ball
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_Y)){ //shoot a ball
 			shooter->shoot();
-		}else if (copilot->ButtonState(F310Buttons::Start)){// close shooting
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_START)){// close shooting
 			shooter->shoot(true);
 		}else if (copilot->RightTrigger() > 0.9) {//custom shooting
 			shooter->shoot((int)SmartDashboard::GetNumber("custom shoot", Arm::CLOSE_SHOOTING_POSITION));
-		}else if (copilot->ButtonState(F310Buttons::Back)){
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_BACK)){
 			arm->goToSwitch();
 		}
 
-		if (copilot->DPadY() == -1 || pilot->ButtonState(F310Buttons::B)){//for moving down after cheval
+		if (copilot->DPadY() == -1 || pilot->ButtonState(GamepadF310::BUTTON_B)){//for moving down after cheval
 			ratTail->goToBottom();
 		} else {
 			ratTail->goToTop();
@@ -405,10 +405,10 @@ private:
 	}
 
 	void CameraPeriodic() {
-		if (pilot->ButtonState(F310Buttons::DPadUp)) {
+		if (pilot->DPadUp()) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
 		}
-		if (pilot->ButtonState(F310Buttons::DPadDown)){
+		if (pilot->DPadDown()) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamBack);
 		}
 
