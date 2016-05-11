@@ -32,7 +32,9 @@ private:
 
 
 	//Analog Input
-	static const int GYRO_ANALOG = 0;
+	enum {
+		GYRO_ANALOG = 0
+	};
 
 	//Digital IO
 	static const int ENCODER_1_DIO = 0;
@@ -81,7 +83,7 @@ private:
 	SendableChooser * shooterChoice;
 	AutonPosition shooterStatus;
 
-	AnalogGyro * gyro;
+	GyroWidget<AnalogGyro> * gyro;
 	// gyro angle compensation
 	bool gyro_comp_active;
 	Ultrasonic * range;
@@ -130,7 +132,7 @@ private:
 		camerafeeds = new CameraFeeds;
 		camerafeeds->init();
 
-		gyro = new AnalogGyro(GYRO_ANALOG);
+		gyro = new GyroWidget<AnalogGyro>(GYRO_ANALOG);
 
 		range = new Ultrasonic(
 				new DigitalOutput(RANGE_PING_DIO),
