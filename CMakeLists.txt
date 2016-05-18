@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 include(lib830/cmake/frc.cmake)
+set(CMAKE_BUILD_TYPE Debug)
 
 project(2016Robot)
 add_subdirectory(lib830)
