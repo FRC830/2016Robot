@@ -19,48 +19,54 @@ public:
 	enum AutonPosition{NO_SHOOT, SHOOT1, SHOOT2, SHOOT3, SHOOT4, SHOOT5};
 private:
 	//PWM
-	static const int LEFT_PWM_ONE = 0;
-	static const int LEFT_PWM_TWO = 4;
-	static const int RIGHT_PWM_ONE = 1;
-	static const int RIGHT_PWM_TWO = 3;
+	enum PWM_id {
+		LEFT_PWM_ONE = 0,
+		LEFT_PWM_TWO = 4,
+		RIGHT_PWM_ONE = 1,
+		RIGHT_PWM_TWO = 3,
 
-	static const int SHOOTER_VICTOR_PWM = 6;
-	static const int INTAKE_VICTOR_PWM = 2;
-	static const int ARM_VICTOR_PWM = 7;
-	static const int TAIL_VICTOR_PWM = 5;
-	static const int TEST_VICTOR = 8;
+		SHOOTER_VICTOR_PWM = 6,
+		INTAKE_VICTOR_PWM = 2,
+		ARM_VICTOR_PWM = 7,
+		TAIL_VICTOR_PWM = 5,
+		TEST_VICTOR = 8,
+	};
 
 
 	//Analog Input
-	enum {
-		GYRO_ANALOG = 0
+	enum Analog_id {
+		GYRO_ANALOG = 0,
 	};
 
 	//Digital IO
-	static const int ENCODER_1_DIO = 0;
-	static const int ENCODER_2_DIO = 1;
-	static const int INTAKE_DIO = 2;
-	static const int ARM_RESET_DIO = 3;
-	static const int TAIL_BOTTOM_DIO = 4;
-	static const int TAIL_TOP_DIO = 5;
-	static const int RANGE_PING_DIO = 6;
-	static const int RANGE_ECHO_DII = 7;
+	enum DIO_id {
+		ENCODER_1_DIO = 0,
+		ENCODER_2_DIO = 1,
+		INTAKE_DIO = 2,
+		ARM_RESET_DIO = 3,
+		TAIL_BOTTOM_DIO = 4,
+		TAIL_TOP_DIO = 5,
+		RANGE_PING_DIO = 6,
+		RANGE_ECHO_DII = 7,
+	};
 
 	//Pneumatics Control Module output channels
-	static const int GEAR_SHIFT_SOL_FORWARD = 0;
-	static const int GEAR_SHIFT_SOL_REVERSE = 1;
+	enum PCM_id {
+		GEAR_SHIFT_SOL_FORWARD = 0,
+		GEAR_SHIFT_SOL_REVERSE = 1,
+	};
 	static const DoubleSolenoid::Value LOW_GEAR = DoubleSolenoid::kForward;
 	static const DoubleSolenoid::Value HIGH_GEAR = DoubleSolenoid::kReverse;
 
 	//For handling intake motor burnout protection
-	static const int INTAKE_PDP_CHANNEL = 11;
+	enum PDP_id {
+		INTAKE_PDP_CHANNEL = 11,
+	};
 	static constexpr float INTAKE_STOP_TIME = 2.0;
 	Timer * intakeTimer;
 
 	static const int TICKS_TO_FULL_SPEED = 15;
 
-	const int kCam0Button = 1;
-	const int kCam1Button = 2;
 	CameraFeeds * camerafeeds;
 
 	GamepadF310 * pilot;
@@ -349,7 +355,7 @@ private:
 		} else {
 			ratTail->goToTop();
 		}
-		//Autoomatically stop the intake motor if it pulls too much current for too long
+		//Automatically stop the intake motor if it pulls too much current for too long
 		//prevents melting and fires and such
 		SmartDashboard::PutNumber("Intake Current", pdp->GetCurrent(INTAKE_PDP_CHANNEL));
 		if(pdp->GetCurrent(INTAKE_PDP_CHANNEL) > 10.0){
