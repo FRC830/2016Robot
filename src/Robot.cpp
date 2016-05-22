@@ -150,9 +150,11 @@ private:
 		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
 		autonChooser->AddObject("Low Bar 2x", new Obstacle(LOW_BAR_2X));
 		autonChooser->AddObject("Portcullis", new Obstacle(PORTCULLIS));
-		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
+//		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
 		autonChooser->AddObject("Moat", new Obstacle(MOAT));
 		autonChooser->AddObject("Ramparts", new Obstacle(RAMPARTS));
+		autonChooser->AddObject("Rock Wall", new Obstacle(ROCK_WALL));
+		autonChooser->AddObject("Rough Terrain", new Obstacle(ROUGH_TERRAIN));
 
 		SmartDashboard::PutData("Auton Program", autonChooser);
 
@@ -188,6 +190,8 @@ private:
 
 	void AutonomousInit()
 	{
+		puts("starting auton");
+		printf("obstacle: %i\n", autonObstacle);
 		auton_stopped = false;
 		timer->Reset();
 		timer->Start();
@@ -208,6 +212,7 @@ private:
 		float time = timer->Get();
 		float turn = gyro->GetAngle() / -15.0;
 		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
+		bool hold_arm = false;
 		switch(autonObstacle){
 			case TOUCH:
 				AutonArcadeDrive(0.25, 5);
@@ -221,7 +226,10 @@ private:
 					AutonArcadeDrive(0.45, 4, 1);
 				else
 					AutonArcadeDrive(0.25, 9, 1);
-				arm->goToSwitch();
+
+				if (time < 1)
+					hold_arm = true;
+
 				if (time < 3)
 					ratTail->goToBottom();
 				else if (time > 13)
@@ -231,8 +239,11 @@ private:
 			case LOW_BAR_2X:
 				if (1 < time && time < 4)
 					AutonArcadeDrive(0.45, 15);
-				else if (4.5 < time && time < 7)
-					AutonArcadeDrive(-0.45, 15);
+				else if (4.5 < time && time < 7.5)
+					AutonArcadeDrive(-0.35, 15);
+
+				if (time < 1)
+					hold_arm = true;
 
 				if (time > 12)
 					ratTail->goToTop();
@@ -279,11 +290,13 @@ private:
 				break;
 		}
 		ratTail->update();
-		arm->update();
+		if (!hold_arm)
+			arm->update();
 	}
 
 	void TeleopInit()
 	{
+		puts("teleop init");
 		arm->reset();
 		shooter->reset();
 		arm->goToSwitch();
@@ -402,6 +415,7 @@ private:
 	}
 
 	void DisabledInit() {
+		puts("disabled");
 		gyro->Reset();
 	}
 
