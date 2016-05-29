@@ -102,6 +102,10 @@ private:
 
 	void RobotInit()
 	{
+		if (GetWPILibVersion() < VersionInfo(2016, 5)) {
+			DriverStation::ReportError("WPILib 2016 Update 5 or newer required");
+			exit(1);
+		}
 		drive = new RobotDrive(
 			new VictorSP(LEFT_PWM_ONE),
 			new VictorSP(LEFT_PWM_TWO),
