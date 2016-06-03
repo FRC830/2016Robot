@@ -89,7 +89,7 @@ private:
 	SendableChooser * shooterChoice;
 	AutonPosition shooterStatus;
 
-	GyroWidget<AnalogGyro> * gyro;
+	Lib830::AnalogGyro * gyro;
 	// gyro angle compensation
 	bool gyro_comp_active;
 	Ultrasonic * range;
@@ -142,7 +142,7 @@ private:
 		camerafeeds = new CameraFeeds;
 		camerafeeds->init();
 
-		gyro = new GyroWidget<AnalogGyro>(GYRO_ANALOG);
+		gyro = new Lib830::AnalogGyro(GYRO_ANALOG);
 
 		range = new Ultrasonic(
 				new DigitalOutput(RANGE_PING_DIO),
