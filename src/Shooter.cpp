@@ -61,6 +61,7 @@ void Shooter::shoot(int pos) {
 void Shooter::reset(){
 	state = STATIONARY;
 	timer->Stop();
+
 	timer->Reset();
 }
 

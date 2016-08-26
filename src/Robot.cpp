@@ -53,7 +53,7 @@ private:
 	static constexpr float INTAKE_STOP_TIME = 2.0;
 	Timer * intakeTimer;
 
-	static const int TICKS_TO_FULL_SPEED = 15;
+	static const int TICKS_TO_FULL_SPEED = 1;
 
 	const int kCam0Button = 1;
 	const int kCam1Button = 2;
@@ -297,6 +297,12 @@ private:
 	void TeleopPeriodic(){
 		//Drive Train
 		float targetForward = pilot->LeftY();
+		if (targetForward > 0.75) {
+			targetForward = 0.75;
+		}
+		if (targetForward < -0.75) {
+			targetForward = -0.75;
+		}
 		float turn;
 		if (pilot->RightY() > 0.9) {
 			// compensate with gyro!
@@ -308,7 +314,7 @@ private:
 		}
 		else {
 			gyro_comp_active = false;
-			turn = pilot->RightX()/1.4;
+			turn = pilot->RightX()/1.8;
 		}
 		SmartDashboard::PutNumber("turn",turn);
 		if (pilot->RightTrigger() > 0.99) {
@@ -333,7 +339,10 @@ private:
 		if (pilot->ButtonState(F310Buttons::X)){
 			arm->goToDown();
 		} else if (pilot->ButtonState(F310Buttons::Y)){
-			arm->goToCheval();
+			arm->goToShooting();
+		}
+		else if (pilot->ButtonState(F310Buttons::X)) {
+			arm ->goToIntake();
 		}
 
 		//Copilot Controls
@@ -350,7 +359,11 @@ private:
 		}else if (copilot->RightTrigger() > 0.9) {//custom shooting
 			shooter->shoot((int)SmartDashboard::GetNumber("custom shoot", Arm::CLOSE_SHOOTING_POSITION));
 		}else if (copilot->ButtonState(F310Buttons::Back)){
-			arm->goToSwitch();
+			arm->goToIntake();
+
+		}
+		else if (copilot -> ButtonState(F310Buttons::LeftBumper)) {
+			arm -> goToShooting();
 		}
 
 		if (copilot->DPadY() == -1 || pilot->ButtonState(F310Buttons::B)){//for moving down after cheval
@@ -378,6 +391,8 @@ private:
 		SmartDashboard::PutBoolean("Rat tail bottom switch", ratTail->bottomSwitchPressed());
 
 		SmartDashboard::PutNumber("Rat Tail Current",pdp->GetCurrent(2));
+		SmartDashboard::PutNumber("If arm is at Target", arm -> isAtTargetPosition());
+		SmartDashboard::PutNumber("Going to Intake", arm->goingToIntake);
 		/*
 		SmartDashboard::PutNumber("P:",0.1);
 		SmartDashboard::PutNumber("I:",0.1);

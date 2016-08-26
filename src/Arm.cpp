@@ -40,7 +40,7 @@ void Arm::goToDown(){
 void Arm::goToIntake(){
 	armPID->Enable();
 	goingToSwitch = false;
-	armPID->SetSetpoint(DOWN_POSITION);
+	armPID->SetSetpoint(INTAKE_POSITION);
 	goingToIntake = true;
 }
 
@@ -62,7 +62,13 @@ void Arm::goToSwitch(){
 	goingToSwitch = true;
 }
 
+bool Arm::bottomSwitchPressed(){
+	return resetSwitch->Get();
+}
+
 void Arm::goToCheval(){
+	armPID -> Enable();
+	goingToSwitch=false;
 	armPID->SetSetpoint(CHEVAL_POSITION);
 }
 
@@ -75,9 +81,6 @@ bool Arm::isAtTargetPosition(){
 	//return true;
 }
 
-bool Arm::bottomSwitchPressed(){
-	return resetSwitch->Get();
-}
 
 double Arm::encoderValue(){
 	return encoder->Get();
@@ -112,6 +115,7 @@ void Arm::update(){
 		arm->Set(-0.4);
 	}
 	if(!goingToSwitch){
+
 		if(isAtTargetPosition()){
 			armPID->Disable();
 		}
