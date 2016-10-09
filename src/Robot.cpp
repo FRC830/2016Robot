@@ -53,7 +53,7 @@ private:
 	static constexpr float INTAKE_STOP_TIME = 2.0;
 	Timer * intakeTimer;
 
-	static const int TICKS_TO_FULL_SPEED = 1;
+	static const int TICKS_TO_FULL_SPEED = 12;
 
 	const int kCam0Button = 1;
 	const int kCam1Button = 2;
