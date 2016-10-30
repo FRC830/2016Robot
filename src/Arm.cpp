@@ -7,7 +7,6 @@
 
 #include <Arm.h>
 #include <WPILib.h>
-#include "../wpiutils/830utilities.h"
 #include <cmath>
 
 using namespace std;

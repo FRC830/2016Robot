@@ -9,7 +9,6 @@
 #define SRC_RATTAIL_H_
 
 #include <WPILib.h>
-#include "../wpiutils/830utilities.h"
 
 class RatTail {
 public:
