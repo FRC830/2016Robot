@@ -161,7 +161,7 @@ private:
 
 	bool auton_stopped;
 	void AutonArcadeDrive(float speed, float max_time, float delay_time = 0) {
-		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 12, "excessive gyro drift: " << gyro->GetAngle());
+		/*WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 12, "excessive gyro drift: " << gyro->GetAngle());
 		float time = timer->Get();
 		if (time >= max_time || abs(gyro->GetAngle()) >= 20)
 			auton_stopped = true;
@@ -174,7 +174,7 @@ private:
 		else {
 			float turn = gyro->GetAngle() / -15.0;
 			arcadeDrive(speed, turn);
-		}
+		} */
 
 	}
 
@@ -201,7 +201,7 @@ private:
 
 		float time = timer->Get();
 		float turn = gyro->GetAngle() / -15.0;
-		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
+		//WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
 		bool hold_arm = false;
 		switch(autonObstacle){
 			case TOUCH:
@@ -297,12 +297,12 @@ private:
 	void TeleopPeriodic(){
 		//Drive Train
 		float targetForward = pilot->LeftY();
-		if (targetForward > 0.75) {
+		/*if (targetForward > 0.75) {
 			targetForward = 0.75;
 		}
 		if (targetForward < -0.75) {
 			targetForward = -0.75;
-		}
+		} */
 		float turn;
 		if (pilot->RightY() > 0.9) {
 			// compensate with gyro!
