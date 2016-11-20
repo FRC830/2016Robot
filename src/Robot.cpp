@@ -1,5 +1,5 @@
 #include "WPILib.h"
-#include "../wpiutils/830utilities.h"
+#include "Lib830.h"
 
 #include "Timer.h"
 
@@ -10,6 +10,8 @@
 #include "RatTail.h"
 #include "Camera.h"
 
+using namespace Lib830;
+
 class Robot: public IterativeRobot
 {
 public:
@@ -17,46 +19,54 @@ public:
 	enum AutonPosition{NO_SHOOT, SHOOT1, SHOOT2, SHOOT3, SHOOT4, SHOOT5};
 private:
 	//PWM
-	static const int LEFT_PWM_ONE = 0;
-	static const int LEFT_PWM_TWO = 4;
-	static const int RIGHT_PWM_ONE = 1;
-	static const int RIGHT_PWM_TWO = 3;
+	enum PWM_id {
+		LEFT_PWM_ONE = 0,
+		LEFT_PWM_TWO = 4,
+		RIGHT_PWM_ONE = 1,
+		RIGHT_PWM_TWO = 3,
 
-	static const int SHOOTER_VICTOR_PWM = 6;
-	static const int INTAKE_VICTOR_PWM = 2;
-	static const int ARM_VICTOR_PWM = 7;
-	static const int TAIL_VICTOR_PWM = 5;
-	static const int TEST_VICTOR = 8;
+		SHOOTER_VICTOR_PWM = 6,
+		INTAKE_VICTOR_PWM = 2,
+		ARM_VICTOR_PWM = 7,
+		TAIL_VICTOR_PWM = 5,
+		TEST_VICTOR = 8,
+	};
 
 
 	//Analog Input
-	static const int GYRO_ANALOG = 0;
+	enum Analog_id {
+		GYRO_ANALOG = 0,
+	};
 
 	//Digital IO
-	static const int ENCODER_1_DIO = 0;
-	static const int ENCODER_2_DIO = 1;
-	static const int INTAKE_DIO = 2;
-	static const int ARM_RESET_DIO = 3;
-	static const int TAIL_BOTTOM_DIO = 4;
-	static const int TAIL_TOP_DIO = 5;
-	static const int RANGE_PING_DIO = 6;
-	static const int RANGE_ECHO_DII = 7;
+	enum DIO_id {
+		ENCODER_1_DIO = 0,
+		ENCODER_2_DIO = 1,
+		INTAKE_DIO = 2,
+		ARM_RESET_DIO = 3,
+		TAIL_BOTTOM_DIO = 4,
+		TAIL_TOP_DIO = 5,
+		RANGE_PING_DIO = 6,
+		RANGE_ECHO_DII = 7,
+	};
 
 	//Pneumatics Control Module output channels
-	static const int GEAR_SHIFT_SOL_FORWARD = 0;
-	static const int GEAR_SHIFT_SOL_REVERSE = 1;
+	enum PCM_id {
+		GEAR_SHIFT_SOL_FORWARD = 0,
+		GEAR_SHIFT_SOL_REVERSE = 1,
+	};
 	static const DoubleSolenoid::Value LOW_GEAR = DoubleSolenoid::kForward;
 	static const DoubleSolenoid::Value HIGH_GEAR = DoubleSolenoid::kReverse;
 
 	//For handling intake motor burnout protection
-	static const int INTAKE_PDP_CHANNEL = 11;
+	enum PDP_id {
+		INTAKE_PDP_CHANNEL = 11,
+	};
 	static constexpr float INTAKE_STOP_TIME = 2.0;
 	Timer * intakeTimer;
 
 	static const int TICKS_TO_FULL_SPEED = 12;
 
-	const int kCam0Button = 1;
-	const int kCam1Button = 2;
 	CameraFeeds * camerafeeds;
 
 	GamepadF310 * pilot;
@@ -79,7 +89,7 @@ private:
 	SendableChooser * shooterChoice;
 	AutonPosition shooterStatus;
 
-	AnalogGyro * gyro;
+	Lib830::AnalogGyro * gyro;
 	// gyro angle compensation
 	bool gyro_comp_active;
 	Ultrasonic * range;
@@ -92,6 +102,10 @@ private:
 
 	void RobotInit()
 	{
+		if (GetWPILibVersion() < VersionInfo(2016, 5)) {
+			DriverStation::ReportError("WPILib 2016 Update 5 or newer required");
+			exit(1);
+		}
 		drive = new RobotDrive(
 			new VictorSP(LEFT_PWM_ONE),
 			new VictorSP(LEFT_PWM_TWO),
@@ -128,7 +142,7 @@ private:
 		camerafeeds = new CameraFeeds;
 		camerafeeds->init();
 
-		gyro = new AnalogGyro(GYRO_ANALOG);
+		gyro = new Lib830::AnalogGyro(GYRO_ANALOG);
 
 		range = new Ultrasonic(
 				new DigitalOutput(RANGE_PING_DIO),
@@ -336,42 +350,38 @@ private:
 		}
 		SmartDashboard::PutString("gear", gear_shift->Get() == LOW_GEAR ? "low" : "high");
 
-		if (pilot->ButtonState(F310Buttons::X)){
+		if (pilot->ButtonState(GamepadF310::BUTTON_X)){
 			arm->goToDown();
-		} else if (pilot->ButtonState(F310Buttons::Y)){
-			arm->goToShooting();
-		}
-		else if (pilot->ButtonState(F310Buttons::X)) {
-			arm ->goToIntake();
+		} else if (pilot->ButtonState(GamepadF310::BUTTON_Y)){
+			arm->goToCheval();
 		}
 
 		//Copilot Controls
-		if (copilot->ButtonState(F310Buttons::A)) { //gather a ball
+		if (copilot->ButtonState(GamepadF310::BUTTON_A)) { //gather a ball
 			shooter->rollIn();
-		}else if (copilot->ButtonState(F310Buttons::B)){ //cancel gathering a ball
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_B)){ //cancel gathering a ball
 			shooter->stop();
-		}else if (copilot->ButtonState(F310Buttons::X)){ //eject a ball
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_X)){ //eject a ball
 			shooter->rollOut();
-		}else if (copilot->ButtonState(F310Buttons::Y)){ //shoot a ball
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_Y)){ //shoot a ball
 			shooter->shoot();
-		}else if (copilot->ButtonState(F310Buttons::Start)){// close shooting
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_START)){// close shooting
 			shooter->shoot(true);
 		}else if (copilot->RightTrigger() > 0.9) {//custom shooting
 			shooter->shoot((int)SmartDashboard::GetNumber("custom shoot", Arm::CLOSE_SHOOTING_POSITION));
-		}else if (copilot->ButtonState(F310Buttons::Back)){
+		}else if (copilot->ButtonState(GamepadF310::BUTTON_BACK)){
 			arm->goToIntake();
-
 		}
-		else if (copilot -> ButtonState(F310Buttons::LeftBumper)) {
-			arm -> goToShooting();
+		else if (copilot->ButtonState(GamepadF310::BUTTON_LEFT_BUMPER)) {
+			arm->goToShooting();
 		}
 
-		if (copilot->DPadY() == -1 || pilot->ButtonState(F310Buttons::B)){//for moving down after cheval
+		if (copilot->DPadY() == -1 || pilot->ButtonState(GamepadF310::BUTTON_B)){//for moving down after cheval
 			ratTail->goToBottom();
 		} else {
 			ratTail->goToTop();
 		}
-		//Autoomatically stop the intake motor if it pulls too much current for too long
+		//Automatically stop the intake motor if it pulls too much current for too long
 		//prevents melting and fires and such
 		SmartDashboard::PutNumber("Intake Current", pdp->GetCurrent(INTAKE_PDP_CHANNEL));
 		if(pdp->GetCurrent(INTAKE_PDP_CHANNEL) > 10.0){
@@ -432,10 +442,10 @@ private:
 	}
 
 	void CameraPeriodic() {
-		if (pilot->ButtonState(F310Buttons::DPadUp)) {
+		if (pilot->DPadUp()) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
 		}
-		if (pilot->ButtonState(F310Buttons::DPadDown)){
+		if (pilot->DPadDown()) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamBack);
 		}
 

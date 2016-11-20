@@ -5,9 +5,9 @@
  *      Author: RatPack
  */
 
-#include <Shooter.h>
 #include <WPILib.h>
-#include "../wpiutils/830utilities.h"
+
+#include "Shooter.h"
 #include "Arm.h"
 
 Shooter::Shooter(DigitalInput * intakeSwitch, VictorSP * intakeMotor, VictorSP * shooterMotor, Arm * robotArm)
