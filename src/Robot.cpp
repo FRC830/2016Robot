@@ -65,7 +65,7 @@ private:
 	static constexpr float INTAKE_STOP_TIME = 2.0;
 	Timer * intakeTimer;
 
-	static const int TICKS_TO_FULL_SPEED = 12;
+	static const int TICKS_TO_FULL_SPEED = 20;
 
 	CameraFeeds * camerafeeds;
 
@@ -217,6 +217,7 @@ private:
 		float turn = gyro->GetAngle() / -15.0;
 		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 15, "excessive gyro drift");
 		bool hold_arm = false;
+
 		switch(autonObstacle){
 			case TOUCH:
 				AutonArcadeDrive(0.25, 5);
@@ -224,6 +225,15 @@ private:
 				break;
 
 			case LOW_BAR:
+				arm->goToIntake();
+				if (time > 12){
+					ratTail->goToTop();
+				} else{
+					ratTail->goToBottom();
+				}
+				AutonArcadeDrive(0.8, 2);
+				break;
+
 			case PORTCULLIS:
 				// delay for 1 second to allow rat tail to go down
 				if (autonObstacle == LOW_BAR)
