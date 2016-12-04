@@ -71,7 +71,8 @@ private:
 	USBCamera * camerafeeds;
 	CameraServer * server;
 
-	static constexpr char const * kDefaultCameraName = "cam0";
+	static constexpr char const * kFrontCameraName = "cam0";
+	static constexpr char const * kBackCamerName = "cam1";
 
 
 	GamepadF310 * pilot;
@@ -462,6 +463,7 @@ private:
 	}
 
 	void CameraPeriodic() {
+
 		/*if (pilot->DPadUp()) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
 		}
