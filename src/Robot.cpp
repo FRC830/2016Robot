@@ -9,6 +9,7 @@
 #include "Shooter.h"
 #include "RatTail.h"
 #include "Camera.h"
+#include "USBCamera.h"
 
 using namespace Lib830;
 
@@ -67,7 +68,11 @@ private:
 
 	static const int TICKS_TO_FULL_SPEED = 20;
 
-	CameraFeeds * camerafeeds;
+	USBCamera * camerafeeds;
+	CameraServer * server;
+
+	static constexpr char const * kDefaultCameraName = "cam0";
+
 
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
@@ -139,8 +144,13 @@ private:
 		gear_shift = new DoubleSolenoid(GEAR_SHIFT_SOL_FORWARD, GEAR_SHIFT_SOL_REVERSE);
 		SmartDashboard::init();
 
-		camerafeeds = new CameraFeeds;
-		camerafeeds->init();
+		//server = new CameraServer();
+		camerafeeds = new USBCamera("cam0", true);
+
+		server = CameraServer::GetInstance();
+
+		server-> SetQuality(60);
+		server -> StartAutomaticCapture("cam0");
 
 		gyro = new Lib830::AnalogGyro(GYRO_ANALOG);
 
@@ -452,7 +462,7 @@ private:
 	}
 
 	void CameraPeriodic() {
-		if (pilot->DPadUp()) {
+		/*if (pilot->DPadUp()) {
 			camerafeeds-> changeCam(camerafeeds->kBtCamFront);
 		}
 		if (pilot->DPadDown()) {
@@ -460,7 +470,9 @@ private:
 		}
 
 		camerafeeds->run();
+		*/
 	}
+
 
 };
 
