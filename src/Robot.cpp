@@ -154,11 +154,12 @@ private:
 		autonChooser->AddObject("Low Bar", new Obstacle(LOW_BAR));
 		autonChooser->AddObject("Low Bar 2x", new Obstacle(LOW_BAR_2X));
 		autonChooser->AddObject("Portcullis", new Obstacle(PORTCULLIS));
-//		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
+		autonChooser->AddObject("Cheval de Frise", new Obstacle(CHEVAL_DE_FRISE));
 		autonChooser->AddObject("Moat", new Obstacle(MOAT));
 		autonChooser->AddObject("Ramparts", new Obstacle(RAMPARTS));
 		autonChooser->AddObject("Rock Wall", new Obstacle(ROCK_WALL));
 		autonChooser->AddObject("Rough Terrain", new Obstacle(ROUGH_TERRAIN));
+
 
 		SmartDashboard::PutData("Auton Program", autonChooser);
 
@@ -175,7 +176,7 @@ private:
 
 	bool auton_stopped;
 	void AutonArcadeDrive(float speed, float max_time, float delay_time = 0) {
-		/*WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 12, "excessive gyro drift: " << gyro->GetAngle());
+		WARN_COND_CHANGE(abs(gyro->GetAngle()) >= 12, "excessive gyro drift: " << gyro->GetAngle());
 		float time = timer->Get();
 		if (time >= max_time || abs(gyro->GetAngle()) >= 20)
 			auton_stopped = true;
@@ -188,7 +189,7 @@ private:
 		else {
 			float turn = gyro->GetAngle() / -15.0;
 			arcadeDrive(speed, turn);
-		} */
+		}
 
 	}
 
@@ -206,12 +207,14 @@ private:
 
 	void AutonomousPeriodic()
 	{
+		SmartDashboard::PutData("gyro",gyro);
 		//where the robot starts on the field in relation to the obstacles
 		//1 is the low bar, 5 is against the secret passage
 		//int location = 1;
 		// float turn;
 		// //int state = 1;
 		// turn = gyro->GetAngle()/-15.0;
+
 
 		float time = timer->Get();
 		float turn = gyro->GetAngle() / -15.0;
@@ -257,25 +260,21 @@ private:
 
 			case CHEVAL_DE_FRISE:
 				//rat tail?
-				if(timer->Get() < 2){
-					arm->goToCheval();
-					arcadeDrive(0.5, turn);
+				if (time<4){
+					AutonArcadeDrive(0.2, 10000);
+					ratTail ->goToTop();
 				}
-				else if(timer->Get() < 4){
-					arcadeDrive(0.0,0.0);
-					arm->goToDown();
+				else if(time>=4 and time<5.5) {
+					arcadeDrive(0,0);
+					ratTail->goToBottom();
 				}
-				else if(timer->Get() < 5){
-					arcadeDrive(0.25, turn);
-					arm->goToCheval();
+				else if(time>=5.5 and time<7) {
+					AutonArcadeDrive(0.7, 10000);
 				}
-				else if(timer->Get() < 8){
-					arcadeDrive(0.75, turn);
+				else {
+					arcadeDrive(0,0);
+					ratTail->goToTop();
 				}
-				else{
-					arcadeDrive(0.0,0.0);
-				}
-
 				break;
 
 			case MOAT:
@@ -445,6 +444,7 @@ private:
 		shooterStatus = shooterChoice->GetSelected() ? *(AutonPosition*)shooterChoice->GetSelected() : NO_SHOOT;
 		SmartDashboard::PutNumber("auton obstacle ID", autonObstacle);
 		CameraPeriodic();
+		SmartDashboard::PutData("gyro", gyro);
 	}
 
 	void CameraPeriodic() {
