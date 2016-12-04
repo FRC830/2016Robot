@@ -365,6 +365,8 @@ private:
 			shooter->rollOut();
 		}else if (copilot->ButtonState(GamepadF310::BUTTON_Y)){ //shoot a ball
 			shooter->shoot();
+			copilot->GamepadF310::RumbleLeft(1);
+			copilot->GamepadF310::RumbleRight(1);
 		}else if (copilot->ButtonState(GamepadF310::BUTTON_START)){// close shooting
 			shooter->shoot(true);
 		}else if (copilot->RightTrigger() > 0.9) {//custom shooting
@@ -374,6 +376,10 @@ private:
 		}
 		else if (copilot->ButtonState(GamepadF310::BUTTON_LEFT_BUMPER)) {
 			arm->goToShooting();
+		}
+		else {
+			copilot->GamepadF310::RumbleLeft(0);
+			copilot->GamepadF310::RumbleRight(0);
 		}
 
 		if (copilot->DPadY() == -1 || pilot->ButtonState(GamepadF310::BUTTON_B)){//for moving down after cheval
